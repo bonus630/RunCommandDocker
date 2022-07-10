@@ -47,7 +47,7 @@ namespace RunCommandDocker
             }
             this.Loaded += DockerUI_Loaded;
             proxyManager = new ProxyManager(this.corelApp, System.IO.Path.Combine(this.corelApp.AddonPath, "RunCommandDocker"));
-            projectsManager = new ProjectsManager(this.Dispatcher);
+            
             AppDomain.CurrentDomain.AssemblyLoad += LoadDomain_AssemblyLoad;
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
@@ -62,7 +62,7 @@ namespace RunCommandDocker
 
 
 
-            
+            projectsManager = new ProjectsManager(this.Dispatcher);
 
             projectsManager.Start(proxyManager);
           
@@ -93,7 +93,7 @@ namespace RunCommandDocker
             //}
 
 
-            4444m3                                                                                                                                                                                                                                                                                                                          dfm,k , cxdz\|zzx uuu/333333333333333ççasm = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(r => string.Equals(r.FullName.Split(',')[0], args.Name.Split(',')[0]));
+            asm = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(r => string.Equals(r.FullName.Split(',')[0], args.Name.Split(',')[0]));
             if (asm == null)
                 asm = Assembly.LoadFrom(args.Name);
             return asm;
@@ -119,4 +119,3 @@ namespace RunCommandDocker
         }
     }
 }
-
