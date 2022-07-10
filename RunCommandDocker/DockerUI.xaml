@@ -54,7 +54,8 @@
             </HierarchicalDataTemplate>
             <DataTemplate DataType="{x:Type local:Command}">
                 <StackPanel Orientation="Horizontal">
-                <Button Style="{StaticResource controlUI.Button}" Width="16" Height="16"  HorizontalAlignment="Left" BorderThickness="0" Background="{x:Null}"  
+
+                        <Button Style="{StaticResource controlUI.Button}" Width="16" Height="16"  HorizontalAlignment="Left" BorderThickness="0" Background="{x:Null}"  
                         CommandParameter="{Binding}" Command="{Binding Path=DataContext.ExecuteCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=TreeView}}">
                         <Button.ToolTip>
                             <StackPanel Orientation="Horizontal">

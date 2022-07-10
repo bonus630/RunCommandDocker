@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -45,11 +46,13 @@ namespace RunCommandDocker.Converters
             Assembly.GetExecutingAssembly());
             try
             {
-                return (System.Drawing.Bitmap)rm.GetObject(ResourceName);
+                CultureInfo enCulture = new CultureInfo("");
+                return (System.Drawing.Bitmap)rm.GetObject(ResourceName, enCulture);
             }
             catch (ArgumentNullException ex)
 
-            { throw ex; }
+            { Debug.WriteLine(ex.Message); }
+            return null;
 
         }
     }

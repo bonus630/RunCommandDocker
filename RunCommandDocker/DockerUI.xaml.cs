@@ -30,7 +30,6 @@ namespace RunCommandDocker
 
         ProxyManager proxyManager;
         ProjectsManager projectsManager;
-       // public ObservableCollection<Project> Projects { get; set; }
       
 
         public DockerUI(object app)
@@ -55,14 +54,7 @@ namespace RunCommandDocker
 
         private void DockerUI_Loaded(object sender, RoutedEventArgs e)
         {
-            //Vamos criar um treeview que terá a seguind estrutura
-            //Carregamos o dll e este será o nivel 1 o nome a ser mostrado é o namespaces
-            //O segundo nivel de cada namespaces seram as class marcadas com o atributo  [CgsAddInModule], o seu construtor deve marcar o atributo  [CgsAddInConstructor]
-            //O terceiro nivel e ultimo de nosso treeview é os métodos de nossas classes marcados com o atributo [CgsAddInMacro]
-
-
-
-            projectsManager = new ProjectsManager(this.Dispatcher);
+             projectsManager = new ProjectsManager(this.Dispatcher);
 
             projectsManager.Start(proxyManager);
           

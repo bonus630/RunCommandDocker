@@ -25,7 +25,6 @@ namespace RunCommandDocker
             var o = loadDomain.CreateInstance(Assembly.GetExecutingAssembly().FullName,
                   Assembly.GetExecutingAssembly().GetExportedTypes().First(r => r.Name.Contains("CommandProxy")).FullName,
                   true, BindingFlags.Default, null, new object[] { project.Path }, null, null);
-            // var o = loadDomain.CreateInstance(Assembly.GetExecutingAssembly().FullName, interfaceType.FullName, true, BindingFlags.Default, null, new object[] { this.corelApp, comandURI }, null, null);
             return (CommandProxy)o.Unwrap();
 
 
@@ -36,11 +35,9 @@ namespace RunCommandDocker
 
             try
             {
-                //Type interfaceType = AppDomain.CurrentDomain.GetAssemblies().First(a => a.GetName().Name.Contains("Interfaces")).GetTypes().First(t => t.IsInterface);
                 var o = loadDomain.CreateInstance(Assembly.GetExecutingAssembly().FullName,
                     Assembly.GetExecutingAssembly().GetExportedTypes().First(r => r.Name.Contains("CommandProxy")).FullName,
                     true, BindingFlags.Default, null, new object[] { this.corelApp, command }, null, null);
-                // var o = loadDomain.CreateInstance(Assembly.GetExecutingAssembly().FullName, interfaceType.FullName, true, BindingFlags.Default, null, new object[] { this.corelApp, comandURI }, null, null);
                 var c = (CommandProxy)o.Unwrap();
                 c.RunCommand();
             }
