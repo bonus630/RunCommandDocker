@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Diagnostics;
 using System.Collections;
 
-namespace RunCommanderDocker
+namespace RunCommandDocker
 {
     public class CommandProxy : MarshalByRefObject
     {
@@ -18,26 +18,33 @@ namespace RunCommanderDocker
         Assembly commandAssembly;
         public Func<object> Ctor { get; private set; }
         private readonly string[] CDRAttributesMacroFlags = { "CgsAddInModule", "CgsAddInConstructor", "CgsAddInMacro", "CgsAddInTool" };
-        //public Action<Application,string,string> ActionRunCommand { get; private set; }
+        private Type[] AssemblyTypes;
+        public Action ActionRunCommand { get; private set; }
 
         public string CommandURI { get; set; }
-
+        private string methodName;
         public CommandProxy(string commandURI)
         {
             Initialize(commandURI);
-            GetTypesNames();
-        }
+           
+        } 
+        //public CommandProxy(string commandURI,string moduleName)
+        //{
+        //    Initialize(commandURI);
+        //    this.methodName = moduleName;
+        //}
 
-        public CommandProxy(object app, string commandURI, string typeFullName)
+        public CommandProxy(object app, Command command)
         {
             this.app = app;
-            Initialize(commandURI);
-            this.GetInstance(this.app, typeFullName);
+            Initialize(command.Parent.Parent.Path);
+            this.GetInstance(this.app, command);
         }
         private void Initialize(string commandURI)
         {
             this.CommandURI = commandURI;
             commandAssembly = Assembly.Load(GetBytes());
+            AssemblyTypes = commandAssembly.GetExportedTypes();
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
         }
 
@@ -61,46 +68,46 @@ namespace RunCommanderDocker
         {
             return File.ReadAllBytes(CommandURI);
         }
-        private object GetInstance(object app, string typeFullName)
+        private object GetInstance(object app, Command command )
         {
             try
             {
-                Ctor = () => (Activator.CreateInstance(commandAssembly.FullName, typeFullName, true, BindingFlags.Default, null, new object[] { app }, null, null).Unwrap());
+                Type type = AssemblyTypes.FirstOrDefault(t => t.FullName.Equals(command.Parent.FullName));
+                Ctor = () => (Activator.CreateInstance(commandAssembly.FullName, type.FullName, true, BindingFlags.Default, null, new object[] { app }, null, null).Unwrap());
                 Instance = Ctor();
+                
+                MethodInfo methodInfo = type.GetMethods().First(m => m.Name.Equals(command.Name));
+                ActionRunCommand = () => methodInfo.Invoke(Instance, null);
                 return Instance;
             }
             catch (Exception ex)
             {
-                if (ex is System.Reflection.ReflectionTypeLoadException)
-                {
-                    var typeLoadException = ex as ReflectionTypeLoadException;
-                    var loaderExceptions = typeLoadException.LoaderExceptions;
-                }
+                throw ex;
             }
             return null;
         }
 
-        private Type[] GetTypes()
-        {
+        //private Type[] GetTypes()
+        //{
 
-            return commandAssembly.GetExportedTypes();
-        }
+        //    return commandAssembly.GetExportedTypes();
+        //}
         public string GetNamespace()
         {
             return "";
         }
-        public string[] GetTypesNames()
+        public Tuple<string,string>[] GetTypesNames()
         {
-            string[] typesNames = { };
-            Type[] types = GetTypes();
+            Tuple<string, string>[] typesNames = { };
+            //Type[] types = GetTypes();
 
-            for (int i = 0; i < types.Length; i++)
+            for (int i = 0; i < AssemblyTypes.Length; i++)
             {
-                Type type = types[i];
+                Type type = AssemblyTypes[i];
                 if (CheckTypeIsQualifedAttributeCDR(type))
                 {
                     Array.Resize(ref typesNames, typesNames.Length+1);
-                    typesNames[typesNames.Length-1] = type.Name;
+                    typesNames[typesNames.Length-1] = new Tuple<string, string>(type.Name,type.FullName);
                 }
             }
             return typesNames;
@@ -109,13 +116,23 @@ namespace RunCommanderDocker
         {
             //todo
             string[] methods = { };
+            Type type = AssemblyTypes.FirstOrDefault(r => r.FullName.Equals(typeFullName));
+            MemberInfo[] members = type.GetMembers();
+            for (int i = 0; i < members.Length; i++)
+            {
+                MemberInfo member = members[i];
+                if (member.MemberType.Equals(MemberTypes.Method) && CheckMethodIsQualifedAttributeCDR(member))
+                {
+                    Array.Resize(ref methods, methods.Length + 1);
+                    methods[methods.Length - 1] = member.Name;
+                }
+            }
             return methods;
         }
-        public void RunCommand(string typeFullName, string MethodName)
+        public void RunCommand()
         {
-            Type type = Ctor.GetType();
-            MethodInfo methodInfo = type.GetMethods().First(m => m.Name.Equals(MethodName));
-            methodInfo.Invoke(Instance, null);
+            ActionRunCommand.Invoke();
+          
         }
         private Assembly LoadDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
@@ -129,18 +146,23 @@ namespace RunCommanderDocker
             var memberInfos = type.GetMembers();
             for (int r = 0; r < memberInfos.Length; r++)
             {
-                var customAttributes = memberInfos[r].GetCustomAttributesData();
-                for (int i = 0; i < customAttributes.Count; i++)
+                return CheckMethodIsQualifedAttributeCDR(memberInfos[r]);
+
+            }
+            return false;
+        }
+        private bool CheckMethodIsQualifedAttributeCDR(MemberInfo method)
+        {
+            var customAttributes = method.GetCustomAttributesData();
+            for (int i = 0; i < customAttributes.Count; i++)
+            {
+                for (int k = 0; k < CDRAttributesMacroFlags.Length; k++)
                 {
-                    for (int k = 0; k < CDRAttributesMacroFlags.Length; k++)
+                    if (customAttributes[i].ToString().Contains(string.Format("{0}()", CDRAttributesMacroFlags[k])))
                     {
-                        if (customAttributes[i].ToString().Contains(string.Format("+{0}()", CDRAttributesMacroFlags[k])))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
-
             }
             return false;
         }

@@ -55,7 +55,52 @@
 
     </Style>
 
+    <Style x:Key="controlUI.Button"  TargetType="{x:Type Button}">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+        <Setter Property="Background" Value="{DynamicResource ControlUI.Button.Static.Background}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ControlUI.Button.Static.Border}"/>
+        <Setter Property="Foreground" Value="{DynamicResource ControlUI.Default.Static.Foreground}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
 
+                    <Grid Name="bg" Background="{DynamicResource ControlUI.Container.Static.Background}">
+                        <!--<Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="true">-->
+                        <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        <Path x:Name="btn_path1" Data="M-6.1162541,-14.174216 L-22.850741,-22.039701 -22.952722,-5.5792794 z" Fill="#FFF4F4F5" Height="18" Stroke="Black" Stretch="Fill" Width="17" StrokeThickness="2"/>
+                        <!--</Border>-->
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsDefaulted" Value="true">
+                            <Setter Property="Stroke" TargetName="btn_path1" Value="{DynamicResource ControlUI.Default.Static.Foreground}"/>
+
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Stroke" TargetName="btn_path1" Value="{DynamicResource ControlUI.Button.Static.Border}"/>
+
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Stroke" TargetName="btn_path1" Value="{DynamicResource ControlUI.Button.MouseOver.Border}"/>
+
+
+
+                            <!--<Setter Property="Background" TargetName="border" Value="{DynamicResource Button.MouseOver.Background}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource Button.MouseOver.Border}"/>-->
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter Property="Background" TargetName="bg" Value="{DynamicResource ControlUI.Button.Pressed.Background}"/>
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <Style TargetType="{x:Type TabControl}">
         <Setter Property="Padding" Value="2"/>

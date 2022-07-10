@@ -47,7 +47,13 @@ namespace RunCommandDocker.Styles
          "Container.Text.Static.Foreground" ,
          "Container.Static.Background" ,
          "Default.Static.Inverted.Foreground" ,
-         "ComboBox.Border.Popup.Item.MouseOver"
+         "ComboBox.Border.Popup.Item.MouseOver",
+          "ControlUI.Button.MouseOver.Background" ,
+         "ControlUI.Button.MouseOver.Border",
+         "ControlUI.Button.Static.Border" ,
+         "ControlUI.Button.Static.Background" ,
+         "ControlUI.Button.Pressed.Background" ,
+         "ControlUI.Button.Pressed.Border" 
         };
 
         private void LoadStyle(string name)

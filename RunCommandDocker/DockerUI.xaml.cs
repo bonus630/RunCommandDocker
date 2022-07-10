@@ -1,5 +1,4 @@
-﻿using RunCommanderDocker;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -28,14 +27,11 @@ namespace RunCommandDocker
     {
         private corel.Application corelApp;
         private Styles.StylesController stylesController;
-        AppDomain loadDomain;
-        AppDomainSetup loadDomainSetup;
-        readonly string dir = "D:\\CDRCommands";
-        FileSystemWatcher fsw;
-        Thread startUpThread;
 
-        public ObservableCollection<Project> Projects { get; set; }
-        public BindingCommand ExecuteCommand { get; set; }
+        ProxyManager proxyManager;
+        ProjectsManager projectsManager;
+       // public ObservableCollection<Project> Projects { get; set; }
+      
 
         public DockerUI(object app)
         {
@@ -50,13 +46,11 @@ namespace RunCommandDocker
                 global::System.Windows.MessageBox.Show("VGCore Erro");
             }
             this.Loaded += DockerUI_Loaded;
-            loadDomainSetup = new AppDomainSetup()
-            {
-                ApplicationBase = System.IO.Path.Combine(this.corelApp.AddonPath, "RunCommandDocker")
-            };
+            proxyManager = new ProxyManager(this.corelApp, System.IO.Path.Combine(this.corelApp.AddonPath, "RunCommandDocker"));
+            projectsManager = new ProjectsManager(this.Dispatcher);
             AppDomain.CurrentDomain.AssemblyLoad += LoadDomain_AssemblyLoad;
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
-        
+
         }
 
         private void DockerUI_Loaded(object sender, RoutedEventArgs e)
@@ -67,34 +61,16 @@ namespace RunCommandDocker
             //O terceiro nivel e ultimo de nosso treeview é os métodos de nossas classes marcados com o atributo [CgsAddInMacro]
 
 
-            fsw = new FileSystemWatcher(dir);
-            fsw.EnableRaisingEvents = true;
-            //fsw.BeginInit();
-            fsw.Changed += Fsw_Changed;
-            fsw.Deleted += Fsw_Deleted;
-            fsw.Created += Fsw_Created;
-            Projects = new ObservableCollection<Project>();
-           
-            ExecuteCommand = new BindingCommand(runCommand);
-           
 
-            startUpThread = new Thread(new ThreadStart(ReadFiles));
-            startUpThread.IsBackground = true;
-            startUpThread.Start(); 
-            this.DataContext = this;
+            
 
-        }
-        private void ReadFiles()
-        {
-            FileInfo[] files = (new DirectoryInfo(dir)).GetFiles();
-
-            foreach (var item in files)
-            {
-                if (item.Extension.ToLower().Equals(".dll"))
-                    CreateProject(item.Name, item.FullName);
-            }
+            projectsManager.Start(proxyManager);
           
+            this.DataContext = projectsManager;
+
         }
+        
+        
 
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
@@ -117,7 +93,7 @@ namespace RunCommandDocker
             //}
 
 
-            asm = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(r => string.Equals(r.FullName.Split(',')[0], args.Name.Split(',')[0]));
+            4444m3                                                                                                                                                                                                                                                                                                                          dfm,k , cxdz\|zzx uuu/333333333333333ççasm = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(r => string.Equals(r.FullName.Split(',')[0], args.Name.Split(',')[0]));
             if (asm == null)
                 asm = Assembly.LoadFrom(args.Name);
             return asm;
@@ -126,123 +102,21 @@ namespace RunCommandDocker
         {
             Debug.WriteLine("AssemblyLoad sender:{0} args{1}", sender, args.LoadedAssembly.CodeBase);
         }
-        private void Fsw_Created(object sender, FileSystemEventArgs e)
-        {
-            CreateProject(e.Name,e.FullPath);
-         
-        }
-        private Project GetCommand(string name, string path)
-        {
-            return Projects.FirstOrDefault(r => r.Name.Equals(name) && r.Path.Equals(path));
-        }
-
-        private void Fsw_Deleted(object sender, FileSystemEventArgs e)
-        {
-            DeleteProject(e.Name, e.FullPath);
-        }
-        private void CreateProject(string name, string path)
-        {
-            Project project = GetCommand(name, path);
-            if (project == null)
-            {
-                project = new Project()
-                {
-                    Name = name,
-                    Path = path
-                };
-                this.Dispatcher.Invoke(new Action(() =>
-                {
-                    Projects.Add(project);
-                    SetModulesCommands(project);
-                    
-                }));
-            }
-        }
-        private void DeleteProject(string name, string path)
-        {
-            Project project = GetCommand(name, path);
-            if (project != null)
-            {
-                this.Dispatcher.Invoke(new Action(() =>
-                {
-                    Projects.Remove(project);
-                }));
-
-
-            }
-        }
-        private void ChangesProject(string name, string path)
-        {
-            Project project = GetCommand(name, path);
-            if (project != null)
-            {
-                this.Dispatcher.Invoke(new Action(() =>
-                {
-                    Projects.Remove(project);
-                    CreateProject(name, path);
-                }));
-
-
-            }
-        }
-        private void Fsw_Changed(object sender, FileSystemEventArgs e)
-        {
-            if (e.ChangeType.Equals(WatcherChangeTypes.Created))
-                CreateProject(e.Name, e.FullPath);
-            if (e.ChangeType.Equals(WatcherChangeTypes.Deleted))
-                DeleteProject(e.Name, e.FullPath);
-            if (e.ChangeType.Equals(WatcherChangeTypes.Changed))
-                ChangesProject(e.Name,e.FullPath);
-        }
-
-        private CommandProxy loadAssembly(Project project)
-        {
-             loadDomain = AppDomain.CreateDomain("LoadDomain", null, loadDomainSetup);
-            //Assembly asm = loadDomain.Load(Assembly.GetExecutingAssembly().FullName);
-            //Type interfaceType = AppDomain.CurrentDomain.GetAssemblies().First(a => a.GetName().Name.Contains("Interfaces")).GetTypes().First(t => t.IsInterface);
-            var o = loadDomain.CreateInstance(Assembly.GetExecutingAssembly().FullName,
-                Assembly.GetExecutingAssembly().GetExportedTypes().First(r => r.Name.Contains("CommandProxy")).FullName,
-                true, BindingFlags.Default, null, new object[] {project.Path }, null, null);
-            // var o = loadDomain.CreateInstance(Assembly.GetExecutingAssembly().FullName, interfaceType.FullName, true, BindingFlags.Default, null, new object[] { this.corelApp, comandURI }, null, null);
-            return (CommandProxy)o.Unwrap();
-
-           
-        }
-        private void runCommand(Command command)
-        {
-            loadDomain = AppDomain.CreateDomain("LoadDomain", null, loadDomainSetup);
-
-            //Type interfaceType = AppDomain.CurrentDomain.GetAssemblies().First(a => a.GetName().Name.Contains("Interfaces")).GetTypes().First(t => t.IsInterface);
-            var o = loadDomain.CreateInstance(Assembly.GetExecutingAssembly().FullName,
-                Assembly.GetExecutingAssembly().GetExportedTypes().First(r => r.Name.Contains("CommandProxy")).FullName,
-                true, BindingFlags.Default, null, new object[] { this.corelApp, command.Parent.Parent.Path,command.Parent.Name }, null, null);
-            // var o = loadDomain.CreateInstance(Assembly.GetExecutingAssembly().FullName, interfaceType.FullName, true, BindingFlags.Default, null, new object[] { this.corelApp, comandURI }, null, null);
-            var c = (CommandProxy)o.Unwrap();
-        }
-        private Type[] GetTypes(Project project)
-        {
-            Type[] types = { };
-            CommandProxy proxy = loadAssembly(project);
-            proxy.GetTypesNames();
-            return types;
-        }
-        private void  SetModulesCommands(Project project)
-        {
-            //todo
-            GetTypes(project);
-            unloadDomain();
-           
-        }
-     
-        private void unloadDomain()
-        {
-            AppDomain.Unload(loadDomain);
-            loadDomain = default;
-        }
+       
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             stylesController.LoadThemeFromPreference();
         }
 
+        private void btn_selectFolder_Click(object sender, RoutedEventArgs e)
+        {
+            projectsManager.SelectFolder();
+        }
+
+        private void btn_openFolder_Click(object sender, RoutedEventArgs e)
+        {
+            projectsManager.OpenFolder();
+        }
     }
 }
+
