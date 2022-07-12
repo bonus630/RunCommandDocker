@@ -26,7 +26,13 @@ namespace RunCommandDocker
       
         private ObservableCollection<T> items;
        
-        public virtual ObservableCollection<T> Items { get { return items; } set { items = value; OnPropertyChanged("Items"); } }
+        public virtual ObservableCollection<T> Items { 
+            get { 
+                return items; 
+            } 
+            set { 
+                items = value; 
+                OnPropertyChanged("Items"); } }
     }
     
     public class Project : CommandCollectionBase<Module>

@@ -52,6 +52,19 @@ namespace RunCommandDocker
             System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog();
             if (fbd.ShowDialog().Equals(System.Windows.Forms.DialogResult.OK))
             {
+                if (fbd.SelectedPath.Equals(Dir))
+                    return;
+                this.dispatcher.Invoke(new Action(() =>
+                {
+                    if(projects!=null)
+                        projects.Clear();   
+                }));
+                try
+                {
+                    startUpThread.Abort();
+                    startUpThread = default;
+                }
+                catch { }
                 Dir = fbd.SelectedPath;
                 Properties.Settings.Default.FolderPath = dir;
                 Properties.Settings.Default.Save();
@@ -105,8 +118,8 @@ namespace RunCommandDocker
                     {
                         Command command = new Command()
                         {
-                            Method = commandNames[i],
-                            Name = commandNames[i],
+                            Method = commandNames[k],
+                            Name = commandNames[k],
                             Parent = m
                         };
                         m.Items.Add(command);

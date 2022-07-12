@@ -28,11 +28,7 @@ namespace RunCommandDocker
             Initialize(commandURI);
            
         } 
-        //public CommandProxy(string commandURI,string moduleName)
-        //{
-        //    Initialize(commandURI);
-        //    this.methodName = moduleName;
-        //}
+    
 
         public CommandProxy(object app, Command command)
         {
@@ -54,7 +50,6 @@ namespace RunCommandDocker
 
             if (args.RequestingAssembly != null)
                 return args.RequestingAssembly;
-            //Pegar o nome do commando 
             if (args.Name.Substring(0, args.Name.IndexOf(",")).Equals(commandAssembly.FullName.Substring(0, commandAssembly.FullName.IndexOf(","))))
                 return commandAssembly;
             return args.RequestingAssembly;
@@ -87,11 +82,6 @@ namespace RunCommandDocker
             return null;
         }
 
-        //private Type[] GetTypes()
-        //{
-
-        //    return commandAssembly.GetExportedTypes();
-        //}
         public string GetNamespace()
         {
             return "";
@@ -99,7 +89,6 @@ namespace RunCommandDocker
         public Tuple<string,string>[] GetTypesNames()
         {
             Tuple<string, string>[] typesNames = { };
-            //Type[] types = GetTypes();
 
             for (int i = 0; i < AssemblyTypes.Length; i++)
             {
@@ -141,19 +130,19 @@ namespace RunCommandDocker
         private bool CheckTypeIsQualifedAttributeCDR(Type type)
         {
             //[ExempleCommand.NewDocumentCommand+CgsAddInMacro()]
-            if (CDRAttributesMacroFlags.Contains(type.Name))
+            if (type.IsInterface || type.GetCustomAttributesData().Count == 0 || CDRAttributesMacroFlags.Contains(type.Name))
                 return false;
-            var memberInfos = type.GetMembers();
-            for (int r = 0; r < memberInfos.Length; r++)
-            {
-                return CheckMethodIsQualifedAttributeCDR(memberInfos[r]);
-
-            }
-            return false;
+            return CheckCustomAttribute(type.GetCustomAttributesData());
+     
+            
         }
         private bool CheckMethodIsQualifedAttributeCDR(MemberInfo method)
         {
             var customAttributes = method.GetCustomAttributesData();
+            return CheckCustomAttribute(customAttributes);
+        }
+        private bool CheckCustomAttribute(IList<CustomAttributeData> customAttributes)
+        {
             for (int i = 0; i < customAttributes.Count; i++)
             {
                 for (int k = 0; k < CDRAttributesMacroFlags.Length; k++)

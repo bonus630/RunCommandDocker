@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:RunCommandDocker"
+             xmlns:local="clr-namespace:RunCommandDocker" d:DataContext="{d:DesignInstance Type=local:ProjectsManager}"
              mc:Ignorable="d" 
              MinWidth="225" Loaded="UserControl_Loaded">
     <UserControl.Resources>
@@ -25,36 +25,34 @@
                 <ColumnDefinition Width="26"/>
                 <ColumnDefinition Width="26"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="5"  Width="16" Height="16"  HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="0" Background="{x:Null}" Name="btn_selectFolder" Click="btn_selectFolder_Click">
+            <Button Grid.Column="5"  Width="22" Height="22"  HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="0" Background="{x:Null}" Name="btn_selectFolder" Click="btn_selectFolder_Click">
                 <Button.ToolTip>
-                    
                         <Label Content="Select a folder to monitor"/>
-                   
                 </Button.ToolTip>
                 <Image Style="{DynamicResource FolderBrowserDialogControlImage}" />
             </Button>
-            <Button Grid.Column="4"  Width="16" Height="16"  HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="0" Background="{x:Null}"  Name="btn_openFolder" Click="btn_openFolder_Click" >
+            <Button Grid.Column="4"  Width="22" Height="22"  HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="0" Background="{x:Null}"  Name="btn_openFolder" Click="btn_openFolder_Click" >
                 <Button.ToolTip>
                     <StackPanel>
                         <Label Content="Open Folder"/>
                         <Label Content="{Binding Dir}" FontWeight="Bold" />
                     </StackPanel>
-
                 </Button.ToolTip>
                 <Image Style="{DynamicResource FolderOpenedImage}" />
             </Button>
         </Grid>
     <TreeView DockPanel.Dock="Bottom" ItemsSource="{Binding Projects}" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+            
         <TreeView.Resources>
+            
             <HierarchicalDataTemplate  ItemsSource="{Binding Path=Items}" DataType="{x:Type local:Project}" >
-                <HeaderedContentControl Header="{Binding Path=Name}" Focusable="False"/>
-            </HierarchicalDataTemplate>
+                    <HeaderedContentControl Header="{Binding Path=Name}" Focusable="False"/>
+                </HierarchicalDataTemplate>
             <HierarchicalDataTemplate  ItemsSource="{Binding Path=Items}" DataType="{x:Type local:Module}" >
                 <HeaderedContentControl Header="{Binding Path=Name}" Focusable="False"/>
             </HierarchicalDataTemplate>
             <DataTemplate DataType="{x:Type local:Command}">
                 <StackPanel Orientation="Horizontal">
-
                         <Button Style="{StaticResource controlUI.Button}" Width="16" Height="16"  HorizontalAlignment="Left" BorderThickness="0" Background="{x:Null}"  
                         CommandParameter="{Binding}" Command="{Binding Path=DataContext.ExecuteCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=TreeView}}">
                         <Button.ToolTip>
