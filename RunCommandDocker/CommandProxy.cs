@@ -95,11 +95,31 @@ namespace RunCommandDocker
                 Type type = AssemblyTypes[i];
                 if (CheckTypeIsQualifedAttributeCDR(type))
                 {
-                    Array.Resize(ref typesNames, typesNames.Length+1);
-                    typesNames[typesNames.Length-1] = new Tuple<string, string>(type.Name,type.FullName);
+                    if(type.IsClass)
+                    {
+                        if (CheckParametizedCtor(type))
+                        {
+                            Array.Resize(ref typesNames, typesNames.Length + 1);
+                            typesNames[typesNames.Length - 1] = new Tuple<string, string>(type.Name, type.FullName);
+                        }
+                    }
+              
                 }
             }
             return typesNames;
+        }
+        public bool CheckParametizedCtor(Type type)
+        {
+            ConstructorInfo[] infos = type.GetConstructors();
+            for (int i = 0; i < infos.Length; i++)
+            {
+                ParameterInfo[] parameterInfos = infos[i].GetParameters();
+                if (parameterInfos.Count<ParameterInfo>() != 1)
+                    continue;
+                if (parameterInfos[0].ParameterType.FullName.Equals("Corel.Interop.VGCore.Application") || parameterInfos[0].ParameterType.FullName.Equals("System.Object"))
+                    return true;
+            }
+            return false;
         }
         public string[] GetMethodNames(string typeFullName)
         {
