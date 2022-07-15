@@ -38,6 +38,18 @@ namespace RunCommandDocker
                 items = value;
                 OnPropertyChanged("Items"); } }
 
+    
+
+        public int Count
+        {
+            get { if (Items == null)
+                    return 0;
+                else
+                    return Items.Count; }
+            
+        }
+
+
         public virtual void Add(T item)
         {
             if(Items==null)
@@ -73,7 +85,7 @@ namespace RunCommandDocker
         public string FullName { get; set; }
     }
 
-    public class Command : CommandCollectionBase<Arguments>
+    public class Command : CommandCollectionBase<Argument>
     {
         public Module Parent { get; set; }
         public object[] Arguments{get{
@@ -103,6 +115,9 @@ namespace RunCommandDocker
 
         private Type returnsType;
         public Type ReturnsType { get { return returnsType; } set { returnsType = value; OnPropertyChanged("ReturnsType"); } }
+
+        private bool hasParam = false;
+        public bool HasParam { get { return hasParam; } set { hasParam = value; OnPropertyChanged("HasParam"); } }
         private void onCommandSelected()
         {
             if (CommandSelectedEvent != null)
@@ -114,20 +129,25 @@ namespace RunCommandDocker
                 onCommandSelected(); } }
         public void AddRange(object[] range)
         {
-            if (Items == null)
-                Items = new ObservableCollection<Arguments>();
+            if (Items == null && range.Length > 0)
+            {
+                Items = new ObservableCollection<Argument>();
+                HasParam = true;
+            }
             for (int i = 0; i < range.Length; i++)
             {
-                Arguments arguments = new Arguments();
+                Argument arguments = new Argument();
 
                 arguments.Name = (range[i] as Tuple<string, Type>).Item1;
                 arguments.ArgumentType = (range[i] as Tuple<string, Type>).Item2;
+                arguments.Parent = this;
                 Items.Add(arguments);
 
             }
+
         }
     }
-    public class Arguments : CommandBase
+    public class Argument : CommandBase
     {
         private Type argumentType;
 

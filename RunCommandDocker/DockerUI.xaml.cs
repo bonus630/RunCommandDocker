@@ -42,7 +42,7 @@ namespace RunCommandDocker
         private void DockerUI_Loaded(object sender, RoutedEventArgs e)
         {
              projectsManager = new ProjectsManager(this.Dispatcher);
-
+            projectsManager.shapeRangeManager = shapeRangeManager;
             projectsManager.Start(proxyManager);
           
             this.DataContext = projectsManager;

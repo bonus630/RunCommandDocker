@@ -21,7 +21,12 @@ namespace RunCommandDocker
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
-        public BindingCommand ExecuteCommand { get; set; }
+        public BindingCommand<Command> ExecuteCommand { get; set; }
+        public BindingCommand<Argument> SetArgumentValueCommand { get; set; }
+
+
+        public ShapeRangeManager shapeRangeManager { get; set; }
+
         private ObservableCollection<Project> projects;
 
         public ObservableCollection<Project> Projects
@@ -33,6 +38,9 @@ namespace RunCommandDocker
         public ObservableCollection<Command> SelectedCommands { get { return selectedCommands; } set { selectedCommands = value; OnPropertyChanged("SelectedCommands"); } }
         string dir = "";
         public string Dir { get { return dir; } set { dir = value; OnPropertyChanged("Dir"); } }
+
+        
+
         FileSystemWatcher fsw;
         Thread startUpThread;
         ProxyManager proxyManager;
@@ -47,9 +55,16 @@ namespace RunCommandDocker
             projects = new ObservableCollection<Project>();
             Dir = Properties.Settings.Default.FolderPath;
             this.proxyManager = proxyManager;
-            ExecuteCommand = new BindingCommand(proxyManager.RunCommand);
+            ExecuteCommand = new BindingCommand<Command>(proxyManager.RunCommand);
+            SetArgumentValueCommand = new BindingCommand<Argument>(SetArgumentValue);
             startFolderMonitor(dir);
         }
+
+        private void SetArgumentValue(Argument argument)
+        {
+            argument.Value = shapeRangeManager.GetShapes();
+        }
+
         public void SelectFolder()
         {
             System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog();
@@ -161,7 +176,7 @@ namespace RunCommandDocker
                 c = SelectedCommands.FirstOrDefault(u => u.ToString().Equals(command.ToString()));
             }
             catch { }
-            if (c != null)
+            if (c != null) 
                 SelectedCommands.Remove(c);
             if (command.IsSelected)
                 SelectedCommands.Add(command);

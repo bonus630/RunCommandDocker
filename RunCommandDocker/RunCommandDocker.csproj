@@ -204,6 +204,7 @@
     <Compile Include="BindingCommand.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="CommandProxy.cs" />
+    <Compile Include="Converters\ReverseBoolVisibilityConverter.cs" />
     <Compile Include="Converters\IntToVisibilityConverter.cs" />
     <Compile Include="Converters\TypeToVisibilityConverter.cs" />
     <Compile Include="DockerUI.xaml.cs">
@@ -227,6 +228,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Resources\DockerControlsTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\Images.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -275,6 +280,7 @@
     <None Include="Resources\Add.png" />
     <None Include="Resources\CleanData.png" />
     <None Include="Resources\Remove.png" />
+    <None Include="Resources\Checkmark.png" />
     <Content Include="UserUI.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

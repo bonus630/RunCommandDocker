@@ -34,4 +34,9 @@
         <Setter Property="Source" Value="{Binding Source={StaticResource CleanData},Converter={StaticResource ResourceToMediaImageConverter}}"/>
     </Style>
 
+    <System:String x:Key="Checkmark">Checkmark</System:String>
+    <Style x:Key="CheckmarkShapeRangeImage" TargetType="Image">
+        <Setter Property="Source" Value="{Binding Source={StaticResource Checkmark},Converter={StaticResource ResourceToMediaImageConverter}}"/>
+    </Style>
+
 </ResourceDictionary>

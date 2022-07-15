@@ -1,13 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using Corel.Interop.VGCore;
 
 namespace RunCommandDocker
 {
-    public class ShapeRangeManager
+    public class ShapeRangeManager : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
         Application corelApp;
         List<int> ShapesIds = new List<int>();
 
@@ -18,7 +26,7 @@ namespace RunCommandDocker
         public int Count { get { return ShapesIds.Count; } }
         public ShapeRange GetShapes()
         {
-            
+
             ShapeRange sr = corelApp.CreateShapeRange();
             try
             {
@@ -28,6 +36,7 @@ namespace RunCommandDocker
                 }
             }
             catch { }
+            
             return sr;
 
         }
@@ -45,6 +54,7 @@ namespace RunCommandDocker
                 }
             }
             catch { }
+            OnPropertyChanged("Count");
         }
         public void RemoveActiveSelection()
         {
@@ -56,12 +66,13 @@ namespace RunCommandDocker
                 }
             }
             catch { }
+            OnPropertyChanged("Count");
         }
-      
+
         public void Clear()
         {
             ShapesIds.Clear();
-            
+            OnPropertyChanged("Count");
         }
     }
 }

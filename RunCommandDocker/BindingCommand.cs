@@ -6,13 +6,13 @@ using System.Windows.Input;
 
 namespace RunCommandDocker
 {
-    public class BindingCommand : ICommand
+    public class BindingCommand<T> : ICommand
     {
         public event EventHandler CanExecuteChanged;
 
-        Action<Command> RunPath;
+        Action<T> RunPath;
 
-        public BindingCommand(Action<Command> action)
+        public BindingCommand(Action<T> action)
         {
             this.RunPath = action;
         }
@@ -24,7 +24,7 @@ namespace RunCommandDocker
 
         public void Execute(object parameter)
         {
-            RunPath.Invoke((Command)parameter);
+            RunPath.Invoke((T)parameter);
         }
     }
 }
