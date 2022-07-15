@@ -8,12 +8,30 @@
     <Style x:Key="AddFolderImage" TargetType="Image">
         <Setter Property="Source" Value="{Binding Source={StaticResource AddFolder},Converter={StaticResource ResourceToMediaImageConverter}}"/>
     </Style>
+    
     <System:String x:Key="FolderBrowserDialogControl">FolderBrowserDialogControl</System:String>
     <Style x:Key="FolderBrowserDialogControlImage" TargetType="Image">
         <Setter Property="Source" Value="{Binding Source={StaticResource FolderBrowserDialogControl},Converter={StaticResource ResourceToMediaImageConverter}}"/>
     </Style>
+    
     <System:String x:Key="FolderOpened">FolderOpened</System:String>
     <Style x:Key="FolderOpenedImage" TargetType="Image">
         <Setter Property="Source" Value="{Binding Source={StaticResource FolderOpened},Converter={StaticResource ResourceToMediaImageConverter}}"/>
     </Style>
+
+    <System:String x:Key="Add">Add</System:String>
+    <Style x:Key="AddShapeRangeImage" TargetType="Image">
+        <Setter Property="Source" Value="{Binding Source={StaticResource Add},Converter={StaticResource ResourceToMediaImageConverter}}"/>
+    </Style>
+
+    <System:String x:Key="Remove">Remove</System:String>
+    <Style x:Key="RemoveShapeRangeImage" TargetType="Image">
+        <Setter Property="Source" Value="{Binding Source={StaticResource Remove},Converter={StaticResource ResourceToMediaImageConverter}}"/>
+    </Style>
+
+    <System:String x:Key="CleanData">CleanData</System:String>
+    <Style x:Key="CleanDataShapeRangeImage" TargetType="Image">
+        <Setter Property="Source" Value="{Binding Source={StaticResource CleanData},Converter={StaticResource ResourceToMediaImageConverter}}"/>
+    </Style>
+
 </ResourceDictionary>

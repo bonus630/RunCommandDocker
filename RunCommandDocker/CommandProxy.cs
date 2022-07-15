@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-
+using System.Runtime.Remoting;
 using System.Reflection;
 using System.Diagnostics;
 using System.Collections;
@@ -19,7 +19,7 @@ namespace RunCommandDocker
         public Func<object> Ctor { get; private set; }
         private readonly string[] CDRAttributesMacroFlags = { "CgsAddInModule", "CgsAddInConstructor", "CgsAddInMacro", "CgsAddInTool" };
         private Type[] AssemblyTypes;
-        public Action ActionRunCommand { get; private set; }
+        public Func<object> ActionRunCommand { get; private set; }
 
         public string CommandURI { get; set; }
         private string methodName;
@@ -72,7 +72,8 @@ namespace RunCommandDocker
                 Instance = Ctor();
                 
                 MethodInfo methodInfo = type.GetMethods().First(m => m.Name.Equals(command.Name));
-                ActionRunCommand = () => methodInfo.Invoke(Instance, null);
+                //command.Items. ToArray<object>()
+                ActionRunCommand = () => methodInfo.Invoke(Instance, command.Arguments);
                 return Instance;
             }
             catch (Exception ex)
@@ -92,6 +93,7 @@ namespace RunCommandDocker
 
             for (int i = 0; i < AssemblyTypes.Length; i++)
             {
+                //Signature.Arguments
                 Type type = AssemblyTypes[i];
                 if (CheckTypeIsQualifedAttributeCDR(type))
                 {
@@ -138,9 +140,30 @@ namespace RunCommandDocker
             }
             return methods;
         }
-        public void RunCommand()
+        public object[] GetArguments(Command command)
         {
-            ActionRunCommand.Invoke();
+            Type type = AssemblyTypes.FirstOrDefault(
+                r => r.FullName.Equals(command.Parent.FullName));
+            MethodInfo mi = type.GetMethods().FirstOrDefault(r=>r.Name.Equals(command.Name));
+            //.GetMembers().FirstOrDefault(u => u.Name.Equals(command.Name));
+            command.ReturnsType = mi.ReturnType;
+            ParameterInfo[] parameters = mi.GetParameters();
+            if (parameters == null)
+                return null;
+           
+            object[] arguments = new object[parameters.Length];
+            for (int i = 0; i < parameters.Length; i++)
+
+            {
+                Tuple<string,Type> argument = new Tuple<string,Type>(parameters[i].Name, parameters[i].ParameterType);
+                arguments[i] = argument;
+            }
+            return arguments;
+            //Pq os items com os argumentos chegam nulos na ui, aqui são setados corretamente
+        }
+        public object RunCommand()
+        {
+            return ActionRunCommand.Invoke();
           
         }
         private Assembly LoadDomain_AssemblyResolve(object sender, ResolveEventArgs args)

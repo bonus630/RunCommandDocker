@@ -204,12 +204,15 @@
     <Compile Include="BindingCommand.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="CommandProxy.cs" />
+    <Compile Include="Converters\IntToVisibilityConverter.cs" />
+    <Compile Include="Converters\TypeToVisibilityConverter.cs" />
     <Compile Include="DockerUI.xaml.cs">
       <DependentUpon>DockerUI.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ProjectsManager.cs" />
     <Compile Include="ProxyManager.cs" />
+    <Compile Include="ShapeRangeManager.cs" />
     <Compile Include="Styles\StylesController.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -269,6 +272,9 @@
     <None Include="Resources\AddFolder.png" />
     <None Include="Resources\FolderBrowserDialogControl.png" />
     <None Include="Resources\FolderOpened.png" />
+    <None Include="Resources\Add.png" />
+    <None Include="Resources\CleanData.png" />
+    <None Include="Resources\Remove.png" />
     <Content Include="UserUI.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

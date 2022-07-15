@@ -15,7 +15,8 @@ namespace RunCommandDocker
     public class ProjectsManager : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        protected  void OnPropertyChanged(string propertyName)
+
+        protected void OnPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
@@ -26,10 +27,12 @@ namespace RunCommandDocker
         public ObservableCollection<Project> Projects
         {
             get { return projects; }
-            set { projects = value;OnPropertyChanged("Projects"); }
+            set { projects = value; OnPropertyChanged("Projects"); }
         }
+        private ObservableCollection<Command> selectedCommands = new ObservableCollection<Command>();
+        public ObservableCollection<Command> SelectedCommands { get { return selectedCommands; } set { selectedCommands = value; OnPropertyChanged("SelectedCommands"); } }
         string dir = "";
-        public string Dir { get { return dir; } set { dir = value;OnPropertyChanged("Dir"); } }
+        public string Dir { get { return dir; } set { dir = value; OnPropertyChanged("Dir"); } }
         FileSystemWatcher fsw;
         Thread startUpThread;
         ProxyManager proxyManager;
@@ -37,7 +40,7 @@ namespace RunCommandDocker
         public ProjectsManager(Dispatcher dispatcher)
         {
             this.dispatcher = dispatcher;
-            
+
         }
         public void Start(ProxyManager proxyManager)
         {
@@ -56,8 +59,8 @@ namespace RunCommandDocker
                     return;
                 this.dispatcher.Invoke(new Action(() =>
                 {
-                    if(projects!=null)
-                        projects.Clear();   
+                    if (projects != null)
+                        projects.Clear();
                 }));
                 try
                 {
@@ -100,8 +103,13 @@ namespace RunCommandDocker
             try
             {
                 CommandProxy proxy = proxyManager.LoadAssembly(project);
-
-                project.Items = new ObservableCollection<Module>();
+                string[] lastCommand = null;
+                if (!string.IsNullOrEmpty(proxyManager.LastCommandPath))
+                {
+                    lastCommand = proxyManager.LastCommandPath.Split('/');
+                }
+                if (lastCommand != null && lastCommand[0].Equals(project.Name))
+                    project.IsExpanded = true;
                 Tuple<string, string>[] typesNames = proxy.GetTypesNames();
                 for (int i = 0; i < typesNames.Length; i++)
                 {
@@ -111,8 +119,9 @@ namespace RunCommandDocker
                         FullName = typesNames[i].Item2,
                         Parent = project
                     };
-                    project.Items.Add(m);
-                    m.Items = new ObservableCollection<Command>();
+                    if (lastCommand != null && lastCommand[1].Equals(m.Name))
+                        m.IsExpanded = true;
+                    project.Add(m);
                     string[] commandNames = proxy.GetMethodNames(m.FullName);
                     for (int k = 0; k < commandNames.Length; k++)
                     {
@@ -122,7 +131,15 @@ namespace RunCommandDocker
                             Name = commandNames[k],
                             Parent = m
                         };
-                        m.Items.Add(command);
+                        var arguments = proxy.GetArguments(command);
+                      
+                            command.AddRange(arguments);
+                    
+                        
+                        command.CommandSelectedEvent += CommandSelected;
+                        if (lastCommand != null && lastCommand[2].Equals(command.Name))
+                            command.IsSelected = true;
+                        m.Add(command);
                     }
                 }
             }
@@ -134,6 +151,22 @@ namespace RunCommandDocker
             {
                 proxyManager.UnloadDomain();
             }
+
+        }
+        private void CommandSelected(Command command)
+        {
+            Command c = null;
+            try
+            {
+                c = SelectedCommands.FirstOrDefault(u => u.ToString().Equals(command.ToString()));
+            }
+            catch { }
+            if (c != null)
+                SelectedCommands.Remove(c);
+            if (command.IsSelected)
+                SelectedCommands.Add(command);
+
+            OnPropertyChanged("SelectedCommands");
 
         }
         private void ReadFiles()
@@ -166,6 +199,7 @@ namespace RunCommandDocker
             Project project = GetProject(name, path);
             if (project == null)
             {
+
                 project = new Project()
                 {
                     Name = name,
@@ -175,7 +209,6 @@ namespace RunCommandDocker
                 {
                     Projects.Add(project);
                     SetModulesCommands(project);
-
                 }));
             }
         }
@@ -188,8 +221,6 @@ namespace RunCommandDocker
                 {
                     Projects.Remove(project);
                 }));
-
-
             }
         }
         private void ChangesProject(string name, string path)
@@ -202,8 +233,6 @@ namespace RunCommandDocker
                     Projects.Remove(project);
                     CreateProject(name, path);
                 }));
-
-
             }
         }
         private void Fsw_Changed(object sender, FileSystemEventArgs e)

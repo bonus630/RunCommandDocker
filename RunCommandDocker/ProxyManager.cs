@@ -11,6 +11,7 @@ namespace RunCommandDocker
         AppDomain loadDomain;
         AppDomainSetup loadDomainSetup;
         object corelApp;
+        public string LastCommandPath{ get;set; }
         public ProxyManager(object corelApp,string path)
         {
             loadDomainSetup = new AppDomainSetup()
@@ -31,6 +32,7 @@ namespace RunCommandDocker
         }
         public void RunCommand(Command command)
         {
+            LastCommandPath = command.ToString();
             loadDomain = AppDomain.CreateDomain("LoadDomain", null, loadDomainSetup);
 
             try
@@ -39,7 +41,7 @@ namespace RunCommandDocker
                     Assembly.GetExecutingAssembly().GetExportedTypes().First(r => r.Name.Contains("CommandProxy")).FullName,
                     true, BindingFlags.Default, null, new object[] { this.corelApp, command }, null, null);
                 var c = (CommandProxy)o.Unwrap();
-                c.RunCommand();
+               command.Returns = c.RunCommand();
             }
             catch (Exception ex)
             {

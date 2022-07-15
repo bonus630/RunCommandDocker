@@ -1,0 +1,67 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Corel.Interop.VGCore;
+
+namespace RunCommandDocker
+{
+    public class ShapeRangeManager
+    {
+        Application corelApp;
+        List<int> ShapesIds = new List<int>();
+
+        public ShapeRangeManager(Application app)
+        {
+            this.corelApp = app;
+        }
+        public int Count { get { return ShapesIds.Count; } }
+        public ShapeRange GetShapes()
+        {
+            
+            ShapeRange sr = corelApp.CreateShapeRange();
+            try
+            {
+                for (int i = 0; i < ShapesIds.Count; i++)
+                {
+                    sr.Add(corelApp.ActivePage.Shapes.FindShape(StaticID: ShapesIds[i]));
+                }
+            }
+            catch { }
+            return sr;
+
+        }
+
+        public void AddActiveSelection()
+        {
+            try
+            {
+
+                for (int i = 1; i <= corelApp.ActiveSelection.Shapes.Count; i++)
+                {
+                    int id = corelApp.ActiveSelection.Shapes[i].StaticID;
+                    if (!ShapesIds.Contains(id))
+                        ShapesIds.Add(id);
+                }
+            }
+            catch { }
+        }
+        public void RemoveActiveSelection()
+        {
+            try
+            {
+                for (int i = 1; i <= corelApp.ActiveSelection.Shapes.Count; i++)
+                {
+                    ShapesIds.Remove(ShapesIds.Single(r => r == corelApp.ActiveSelection.Shapes[i].StaticID));
+                }
+            }
+            catch { }
+        }
+      
+        public void Clear()
+        {
+            ShapesIds.Clear();
+            
+        }
+    }
+}

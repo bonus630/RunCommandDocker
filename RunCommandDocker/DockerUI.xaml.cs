@@ -1,23 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Remoting;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using corel = Corel.Interop.VGCore;
 
 
@@ -30,7 +16,7 @@ namespace RunCommandDocker
 
         ProxyManager proxyManager;
         ProjectsManager projectsManager;
-      
+        ShapeRangeManager shapeRangeManager;
 
         public DockerUI(object app)
         {
@@ -46,7 +32,8 @@ namespace RunCommandDocker
             }
             this.Loaded += DockerUI_Loaded;
             proxyManager = new ProxyManager(this.corelApp, System.IO.Path.Combine(this.corelApp.AddonPath, "RunCommandDocker"));
-            
+            shapeRangeManager = new ShapeRangeManager(this.corelApp);
+
             AppDomain.CurrentDomain.AssemblyLoad += LoadDomain_AssemblyLoad;
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
@@ -67,24 +54,7 @@ namespace RunCommandDocker
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
             Assembly asm = null;
-            //string s = args.Name.Split(',')[0];
-            //if (s.EndsWith(".resources"))
-            //{
-            //    asm = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(r => (s.Contains(r.FullName.Split(',')[0])));
-            //    Type type = asm.GetTypes().FirstOrDefault(t => t.Name.Equals("Resources"));
-
-            //    //string resourceName = asm.GetManifestResourceNames().FirstOrDefault(r => r.StartsWith(asm.GetName().Name));
-            //    string resourceName = asm.GetManifestResourceNames().LastOrDefault(r => r.Contains(asm.GetName().Name));
-            //    resourceName = "br.corp.bonus630.MediaShortPads.Server.CDR.Properties.Resources.resources";
-            //    using (Stream st = asm.GetManifestResourceStream(resourceName))
-            //    {
-            //        byte[] bytes = new BinaryReader(st).ReadBytes((int)st.Length);
-            //        asm = Assembly.Load(bytes);
-            //        return asm;
-            //    }
-            //}
-
-
+   
             asm = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(r => string.Equals(r.FullName.Split(',')[0], args.Name.Split(',')[0]));
             if (asm == null)
                 asm = Assembly.LoadFrom(args.Name);
@@ -108,6 +78,21 @@ namespace RunCommandDocker
         private void btn_openFolder_Click(object sender, RoutedEventArgs e)
         {
             projectsManager.OpenFolder();
+        }
+
+        private void btn_addSelection_Click(object sender, RoutedEventArgs e)
+        {
+            shapeRangeManager.AddActiveSelection();
+        }
+
+        private void btn_removeSelection_Click(object sender, RoutedEventArgs e)
+        {
+            shapeRangeManager.RemoveActiveSelection();
+        }
+
+        private void btn_clearRange_Click(object sender, RoutedEventArgs e)
+        {
+            shapeRangeManager.Clear();
         }
     }
 }

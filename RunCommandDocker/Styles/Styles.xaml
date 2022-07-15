@@ -54,7 +54,7 @@
         <Setter Property="Foreground" Value="{DynamicResource Default.Static.Foreground}"/>
 
     </Style>
-
+    
     <Style x:Key="controlUI.Button"  TargetType="{x:Type Button}">
         <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
         <Setter Property="Background" Value="{DynamicResource ControlUI.Button.Static.Background}"/>
