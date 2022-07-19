@@ -18,6 +18,11 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style x:Name="PopupBorder" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource Container.Static.Background}"/>
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Button.Static.Border}"/>
+    </Style>
     <Style TargetType="ScrollViewer">
         <Setter Property="Background" Value="{DynamicResource Container.Static.Background}"/>
         <Setter Property="Foreground" Value="{DynamicResource Container.Text.Static.Foreground}" />

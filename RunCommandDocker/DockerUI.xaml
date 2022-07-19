@@ -3,7 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:RunCommandDocker" d:DataContext="{d:DesignInstance Type=local:ProjectsManager}"
+             xmlns:System="clr-namespace:System;assembly=mscorlib"
+             xmlns:local="clr-namespace:RunCommandDocker" 
+             xmlns:popup="clr-namespace:RunCommandDocker.MyPopup" 
+             d:DataContext="{d:DesignInstance Type=local:ProjectsManager}"
              xmlns:converters="clr-namespace:RunCommandDocker.Converters"
              mc:Ignorable="d" 
              MinWidth="225" Loaded="UserControl_Loaded">
@@ -12,6 +15,7 @@
             <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
             <converters:TypeToVisibilityConverter x:Key="TypeToVisibilityConverter" />
             <converters:ReverseBoolVisibilityConverter x:Key="ReverseBoolVisibilityConverter" />
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles/Colors.xaml"/>
                 <ResourceDictionary Source="Styles/Styles.xaml"/>
@@ -21,6 +25,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <DockPanel LastChildFill="true">
+
         <Grid Height="26" DockPanel.Dock="Top" HorizontalAlignment="Right">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="26"/>
@@ -51,85 +56,93 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <ListView Grid.Row="0" ItemsSource="{Binding SelectedCommands}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Expander  IsExpanded="true" x:Name="expander_Attributes"
+            <ScrollViewer Grid.Row="0" >
+                <ListView ItemsSource="{Binding SelectedCommands}">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Expander  IsExpanded="true" x:Name="expander_Attributes"
                                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
-                            <Expander.Header>
-                                <StackPanel Orientation="Horizontal">
-                                    <Button Style="{StaticResource controlUI.Button}" Width="16" Height="16"  HorizontalAlignment="Left" BorderThickness="0" Background="{x:Null}"  
+                                <Expander.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Style="{StaticResource controlUI.Button}" Width="16" Height="16"  HorizontalAlignment="Left" BorderThickness="0" Background="{x:Null}"  
                         CommandParameter="{Binding}" Command="{Binding Path=DataContext.ExecuteCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListView}}">
-                                        <Button.ToolTip>
-                                            <StackPanel Orientation="Horizontal">
-                                                <Label>Run</Label>
-                                                <Label Content="{Binding Name}"/>
-                                            </StackPanel>
-                                        </Button.ToolTip>
-                                    </Button>
-                                    <Label Content="{Binding Name}" />
-                                </StackPanel>
-                            </Expander.Header>
-                            <StackPanel>
-                                <StackPanel Visibility="{Binding ReturnsType,Converter={StaticResource TypeToVisibilityConverter}}">
-                                    <Label Content="Return:" FontWeight="Bold"/>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Label Content="Type:" />
-                                        <Label Content="{Binding ReturnsType.Name}" ToolTip="{Binding ReturnsType.FullName}" />
+                                            <Button.ToolTip>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Label>Run</Label>
+                                                    <Label Content="{Binding Name}"/>
+                                                </StackPanel>
+                                            </Button.ToolTip>
+                                        </Button>
+                                        <Label Content="{Binding Name}" />
+                                    </StackPanel>
+                                </Expander.Header>
+                                <StackPanel>
+                                    <StackPanel Visibility="{Binding ReturnsType,ConverterParameter={x:Type System:Void},Converter={StaticResource TypeToVisibilityConverter}}">
+                                        <Label Content="Return:" FontWeight="Bold"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="Type:" />
+                                            <Label Content="{Binding ReturnsType.Name}" ToolTip="{Binding ReturnsType.FullName}"/>
+
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="Value:" />
+                                            <Label Content="{Binding Returns}" MouseEnter="Label_MouseEnter" x:Name="lba_returns"/>
+                                            <popup:MyPopup ToReflect="{Binding Returns}" PlacementTarget="{Binding ElementName=lba_returns}" Placement="Right" AllowsTransparency="True"
+                                                       IsOpen="{Binding Path=DataContext.MyPopupIsOpen, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListView}}" 
+                                                           PopupCloseEvent="MyPopup_PopupCloseEvent"/>
+
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <StackPanel Visibility="{Binding Count,Converter={StaticResource IntToVisibilityConverter},FallbackValue=0}" >
+                                        <Label Content="Params:" FontWeight="Bold"/>
+
+                                        <ListView ItemsSource="{Binding Items}" SelectionMode="Single">
+                                            <ListView.ItemContainerStyle>
+                                                <Style TargetType="ListViewItem">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="Transparent" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                                    <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                                                </Style>
+                                            </ListView.ItemContainerStyle>
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*" />
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition />
+                                                            <RowDefinition />
+                                                            <!--<RowDefinition />-->
+                                                        </Grid.RowDefinitions>
+                                                        <!--<Label Grid.Row="0" Grid.Column="0" Content="Name:" />-->
+                                                        <Label Grid.Row="0" Grid.Column="0" Content="{Binding Name}" />
+                                                        <!--<Label Grid.Row="1" Grid.Column="0" Content="Type:" />-->
+                                                        <Label Grid.Row="0" Grid.Column="1" Content="{Binding ArgumentType.Name}" ToolTip="{Binding ArgumentType.FullName}"/>
+                                                        <Label Grid.Row="1" Grid.Column="0" Content="Value:" />
+                                                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Value}" Width="60"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
 
                                     </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Label Content="Value:" />
-                                        <Label Content="{Binding Returns}" />
-                                    </StackPanel>
                                 </StackPanel>
-                                <StackPanel Visibility="{Binding Count,Converter={StaticResource IntToVisibilityConverter},FallbackValue=0}" >
-                                    <Label Content="Params:" FontWeight="Bold"/>
-
-                                    <ListView ItemsSource="{Binding Items}">
-                                        <ListView.ItemContainerStyle>
-                                            <Style TargetType="ListViewItem">
-                                                <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="Transparent" />
-                                                    </Trigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </ListView.ItemContainerStyle>
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate>
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="44" />
-                                                        <ColumnDefinition Width="*"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition />
-                                                        <RowDefinition />
-                                                        <RowDefinition />
-                                                    </Grid.RowDefinitions>
-                                                    <Label Grid.Row="0" Grid.Column="0" Content="Name:" />
-                                                    <Label Grid.Row="0" Grid.Column="1" Content="{Binding Name}" />
-                                                    <Label Grid.Row="1" Grid.Column="0" Content="Type:" />
-                                                    <Label Grid.Row="1" Grid.Column="1" Content="{Binding ArgumentType.Name}" ToolTip="{Binding ArgumentType.FullName}"/>
-                                                    <Label Grid.Row="2" Grid.Column="0" Content="Value:" />
-                                                    <Button Grid.Row="2" Grid.Column="2" Width="22" Height="22"  HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="0" Background="{x:Null}"
-                                                            CommandParameter="{Binding}" Command="{Binding Path=DataContext.SetArgumentValueCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView,AncestorLevel=2}}">
-                                                        <Button.ToolTip>
-                                                            <Label Content="Set ShapeRange Reference to this param"/>
-                                                        </Button.ToolTip>
-                                                        <Image Style="{DynamicResource CheckmarkShapeRangeImage}" />
-                                                    </Button>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
-                                    </ListView>
-                                </StackPanel>
-                            </StackPanel>
-                        </Expander>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                            </Expander>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </ScrollViewer>
             <GroupBox Grid.Row="1" Header="Shape Range Manager" Margin="0,10">
                 <Grid Height="26">
                     <Grid.ColumnDefinitions>
@@ -160,6 +173,13 @@
                         </Button.ToolTip>
                         <Image Style="{DynamicResource CleanDataShapeRangeImage}" />
                     </Button>
+                    <Button Grid.Column="5" Width="22" Height="22"  HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="0" Background="{x:Null}"
+                                                             Command="{Binding Path=SetShapeRangeToValueCommand}">
+                        <Button.ToolTip>
+                            <Label Content="Set ShapeRange Reference to this param"/>
+                        </Button.ToolTip>
+                        <Image Style="{DynamicResource CheckmarkShapeRangeImage}" />
+                    </Button>
                     <Border Grid.Column="6" BorderBrush="Red" BorderThickness="2" CornerRadius="6">
                         <Label HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding shapeRangeManager.Count}" />
                     </Border>
@@ -171,11 +191,12 @@
                 <Style TargetType="TreeViewItem">
                     <Setter Property="TreeViewItem.IsExpanded" Value="{Binding IsExpanded}"/>
                     <Setter Property="TreeViewItem.IsSelected" Value="{Binding IsSelected}"/>
+
                 </Style>
             </TreeView.ItemContainerStyle>
             <TreeView.Resources>
 
-                <HierarchicalDataTemplate  ItemsSource="{Binding Path=Items}" DataType="{x:Type local:Project}" >
+                <HierarchicalDataTemplate  ItemsSource="{Binding Path=Items}" DataType="{x:Type local:Project}">
                     <HeaderedContentControl Header="{Binding Path=Name}" Focusable="False"/>
                 </HierarchicalDataTemplate>
                 <HierarchicalDataTemplate  ItemsSource="{Binding Path=Items}" DataType="{x:Type local:Module}" >
@@ -183,8 +204,13 @@
                 </HierarchicalDataTemplate>
                 <DataTemplate DataType="{x:Type local:Command}">
 
-                    <StackPanel Orientation="Horizontal">
-                        <Button Style="{StaticResource controlUI.Button}" Width="16" Height="16"  HorizontalAlignment="Left" BorderThickness="0" Background="{x:Null}"
+                    <Grid Height="28">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Style="{StaticResource controlUI.Button}" Width="16" Height="16"  HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="0" Background="{x:Null}"
                                 Visibility="{Binding Path=HasParam,  Converter={StaticResource ReverseBoolVisibilityConverter}}"
                         CommandParameter="{Binding}" Command="{Binding Path=DataContext.ExecuteCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=TreeView}}">
                             <Button.ToolTip>
@@ -194,8 +220,18 @@
                                 </StackPanel>
                             </Button.ToolTip>
                         </Button>
-                        <Label Content="{Binding Name}" />
-                    </StackPanel>
+                        <!--Visibility="{Binding Path=HasParam,  Converter={StaticResource ReverseBoolVisibilityConverter}}"-->
+                        <Button Grid.Column="1"  Width="16" Height="16"  HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="0" Background="{x:Null}"
+                                
+                        CommandParameter="{Binding}" Command="{Binding Path=DataContext.SetCommandToValueCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=TreeView}}">
+                            <Button.ToolTip>
+                                <Label Content="Set returns value to selected argument"/>
+                            </Button.ToolTip>
+                            <Image Style="{DynamicResource CheckmarkShapeRangeImage}" />
+
+                        </Button>
+                        <Label Grid.Column="2" VerticalAlignment="Center" Content="{Binding Name}" />
+                    </Grid>
 
                 </DataTemplate>
             </TreeView.Resources>

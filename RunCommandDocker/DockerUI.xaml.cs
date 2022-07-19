@@ -94,5 +94,15 @@ namespace RunCommandDocker
         {
             shapeRangeManager.Clear();
         }
+
+        private void Label_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            projectsManager.MyPopupIsOpen = true;
+        }
+
+        private void MyPopup_PopupCloseEvent()
+        {
+            projectsManager.MyPopupIsOpen = false;
+        }
     }
 }

@@ -13,10 +13,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RunCommandDocker</RootNamespace>
     <AssemblyName>RunCommandDocker</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TemplateGuid>{8AAFD9D4-608E-49AA-8035-EEB1F6F86213}</TemplateGuid>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <Import Project="$(CdrTargetPath)" Condition="Exists('$(CdrTargetPath)')" />
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -27,6 +28,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'X7 Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -36,6 +38,7 @@
     <DefineConstants>DEBUG;TRACE;X7</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'X7 Release|AnyCPU'">
     <DebugType>none</DebugType>
@@ -45,6 +48,7 @@
     <DefineConstants>TRACE;X7</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'X8 Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -54,6 +58,7 @@
     <DefineConstants>DEBUG;TRACE;X8</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'X8 Release|AnyCPU'">
     <DebugType>none</DebugType>
@@ -63,6 +68,7 @@
     <DefineConstants>TRACE;X8</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2017 Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -72,6 +78,7 @@
     <DefineConstants>DEBUG;TRACE;X9</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2017 Release|AnyCPU'">
     <DebugType>none</DebugType>
@@ -81,6 +88,7 @@
     <DefineConstants>TRACE;X9</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2018 Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -90,6 +98,7 @@
     <DefineConstants>DEBUG;TRACE;X10</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2018 Release|AnyCPU'">
     <DebugType>none</DebugType>
@@ -99,6 +108,7 @@
     <DefineConstants>TRACE;X10</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2019 Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -108,6 +118,7 @@
     <DefineConstants>DEBUG;TRACE;X11</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2019 Release|AnyCPU'">
     <DebugType>none</DebugType>
@@ -117,6 +128,7 @@
     <DefineConstants>TRACE;X11</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2020 Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -126,6 +138,7 @@
     <DefineConstants>DEBUG;TRACE;X12</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2020 Release|AnyCPU'">
     <DebugType>none</DebugType>
@@ -135,6 +148,7 @@
     <DefineConstants>TRACE;X12</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2021 Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -144,6 +158,7 @@
     <DefineConstants>DEBUG;TRACE;X13</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2021 Release|AnyCPU'">
     <DebugType>none</DebugType>
@@ -153,6 +168,7 @@
     <DefineConstants>TRACE;X13</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2022 Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -162,6 +178,7 @@
     <DefineConstants>DEBUG;TRACE;X14</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2022 Release|AnyCPU'">
     <DebugType>none</DebugType>
@@ -171,6 +188,7 @@
     <DefineConstants>TRACE;X14</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <OutputType>Library</OutputType>
@@ -204,6 +222,7 @@
     <Compile Include="BindingCommand.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="CommandProxy.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\ReverseBoolVisibilityConverter.cs" />
     <Compile Include="Converters\IntToVisibilityConverter.cs" />
     <Compile Include="Converters\TypeToVisibilityConverter.cs" />
@@ -211,8 +230,13 @@
       <DependentUpon>DockerUI.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MyPopup\MyPopup.cs" />
+    <Compile Include="MyPopup\PopupContent.xaml.cs">
+      <DependentUpon>PopupContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ProjectsManager.cs" />
     <Compile Include="ProxyManager.cs" />
+    <Compile Include="Reflected.cs" />
     <Compile Include="ShapeRangeManager.cs" />
     <Compile Include="Styles\StylesController.cs">
       <SubType>Code</SubType>
@@ -228,6 +252,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="MyPopup\PopupContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\DockerControlsTemplates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -281,6 +309,7 @@
     <None Include="Resources\CleanData.png" />
     <None Include="Resources\Remove.png" />
     <None Include="Resources\Checkmark.png" />
+    <None Include="Resources\Copy.png" />
     <Content Include="UserUI.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -288,6 +317,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <StartAction>Program</StartAction>

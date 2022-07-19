@@ -22,7 +22,30 @@ namespace RunCommandDocker
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
         public BindingCommand<Command> ExecuteCommand { get; set; }
-        public BindingCommand<Argument> SetArgumentValueCommand { get; set; }
+        public BindingCommand<Command> SetCommandToValueCommand { get; set; }
+        public BindingCommand<Reflected> CopyValueCommand { get; set; }
+        public SimpleCommand SetShapeRangeToValueCommand { get; set; }
+
+        private bool myPopupIsOpen;
+
+        public bool MyPopupIsOpen
+        {
+            get { return myPopupIsOpen; }
+            set { myPopupIsOpen = value;
+                OnPropertyChanged("MyPopupIsOpen");
+            }
+        }
+  
+
+        private Point myPopupPosition;
+
+        public Point MyPopupPosition
+        {
+            get { return myPopupPosition; }
+            set { myPopupPosition = value;
+                OnPropertyChanged("MyPopupPosition");
+            }
+        }
 
 
         public ShapeRangeManager shapeRangeManager { get; set; }
@@ -56,15 +79,38 @@ namespace RunCommandDocker
             Dir = Properties.Settings.Default.FolderPath;
             this.proxyManager = proxyManager;
             ExecuteCommand = new BindingCommand<Command>(proxyManager.RunCommand);
-            SetArgumentValueCommand = new BindingCommand<Argument>(SetArgumentValue);
+            CopyValueCommand = new BindingCommand<Reflected>(CopyValue);
+            SetCommandToValueCommand = new BindingCommand<Command>(SetCommandReturnArgumentValue);
+            SetShapeRangeToValueCommand = new SimpleCommand(SetShapeRangeArgumentValue);
             startFolderMonitor(dir);
         }
-
-        private void SetArgumentValue(Argument argument)
+        private void SetCommandReturnArgumentValue(Command command)
         {
-            argument.Value = shapeRangeManager.GetShapes();
+            
+            if (this.selectedCommands[0] != null)
+            {
+                Argument argument = this.selectedCommands[0].Items.FirstOrDefault(r => r.IsSelected);
+                if (argument != null)
+                    argument.Value = new Func<Command, object>(
+                        (c) => { 
+                            proxyManager.RunCommand(command); 
+                            return command.Returns; 
+                        });
+            }
         }
-
+        private void SetShapeRangeArgumentValue()
+        {
+            if (this.selectedCommands[0] != null)
+            {
+                Argument argument = this.selectedCommands[0].Items.FirstOrDefault(r => r.IsSelected);
+                if(argument!=null)
+                    argument.Value = new Func<Corel.Interop.VGCore.ShapeRange>(shapeRangeManager.GetShapes);
+            }
+        }
+        private void CopyValue(Reflected o)
+        {
+            Clipboard.SetText(o.Value.ToString());
+        }
         public void SelectFolder()
         {
             System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog();

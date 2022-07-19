@@ -12,7 +12,10 @@ namespace RunCommandDocker
         private bool isSelected;
         public virtual bool IsSelected { get { return isSelected; } set { isSelected = value; OnPropertyChanged("IsSelected"); } }
         private bool isExpanded;
-        public virtual bool IsExpanded { get { return isExpanded; } set { isExpanded = value; OnPropertyChanged("IsExpanded"); } }
+        public virtual bool IsExpanded { get { return isExpanded; } 
+            set { 
+                isExpanded = value; 
+                OnPropertyChanged("IsExpanded"); } }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -98,7 +101,17 @@ namespace RunCommandDocker
                         objects = new object[length];
                     for (int i = 0; i < length; i++)
                     {
-                        objects[i] = Items[i].Value;
+                        if (Items[i].ArgumentType.IsValueType)
+                        {
+                            objects[i] = Convert.ChangeType(Items[i].Value, Items[i].ArgumentType);
+                        }
+                        else
+                        {
+                            if (Items[i].Value != null)
+                                objects[i] = (Items[i].Value as Func<object>).Invoke();
+                            else
+                                objects[i] = null;
+                        }
                     }
                 }
 
@@ -111,10 +124,24 @@ namespace RunCommandDocker
         public event Action<Command> CommandSelectedEvent;
 
         private object returns;
-        public object Returns { get { return returns; } set { returns = value; OnPropertyChanged("Returns"); OnPropertyChanged("ReturnsType"); } }
+        public object Returns { get { return returns; } set { 
+                returns = value; 
+                OnPropertyChanged("Returns"); 
+                OnPropertyChanged("ReturnsType"); } }
 
         private Type returnsType;
         public Type ReturnsType { get { return returnsType; } set { returnsType = value; OnPropertyChanged("ReturnsType"); } }
+        private Reflected reflected;
+
+        public Reflected ReflectedProp
+        {
+            get { return reflected; }
+            set
+            {
+                reflected = value;
+                OnPropertyChanged("ReflectedProp");
+            }
+        }
 
         private bool hasParam = false;
         public bool HasParam { get { return hasParam; } set { hasParam = value; OnPropertyChanged("HasParam"); } }
@@ -152,8 +179,13 @@ namespace RunCommandDocker
         private Type argumentType;
 
         public Command Parent { get; set; }
-        public Type ArgumentType { get { return argumentType; } set { argumentType = value;OnPropertyChanged("ArgumentType"); } }
-        public object Value { get; set; }
+        public Type ArgumentType { get { return argumentType; } set { 
+                argumentType = value;
+                OnPropertyChanged("ArgumentType"); } }
+        private object _value;
+        public object Value { get { return _value; } set { 
+                _value = value;
+                OnPropertyChanged("Value"); } }
 
     }
 }

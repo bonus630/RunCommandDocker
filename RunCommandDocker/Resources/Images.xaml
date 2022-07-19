@@ -39,4 +39,9 @@
         <Setter Property="Source" Value="{Binding Source={StaticResource Checkmark},Converter={StaticResource ResourceToMediaImageConverter}}"/>
     </Style>
 
+    <System:String x:Key="Copy">Copy</System:String>
+    <Style x:Key="CopyImage" TargetType="Image">
+        <Setter Property="Source" Value="{Binding Source={StaticResource Copy},Converter={StaticResource ResourceToMediaImageConverter}}"/>
+    </Style>
+
 </ResourceDictionary>

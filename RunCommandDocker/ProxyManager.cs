@@ -39,9 +39,10 @@ namespace RunCommandDocker
             {
                 var o = loadDomain.CreateInstance(Assembly.GetExecutingAssembly().FullName,
                     Assembly.GetExecutingAssembly().GetExportedTypes().First(r => r.Name.Contains("CommandProxy")).FullName,
-                    true, BindingFlags.Default, null, new object[] { this.corelApp, command }, null, null);
+                    true, BindingFlags.Default, null, new object[] { this.corelApp, command}, null, null);
                 var c = (CommandProxy)o.Unwrap();
                command.Returns = c.RunCommand();
+               
             }
             catch (Exception ex)
             {
@@ -57,6 +58,7 @@ namespace RunCommandDocker
             {
                 UnloadDomain();
             }
+           
         }
 
         public void UnloadDomain()
