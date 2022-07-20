@@ -57,7 +57,7 @@ namespace RunCommandDocker.MyPopup
                     //}));
                     //getChildrenThread.IsBackground = true;
                     //getChildrenThread.Start(ToReflect);
-                    (this.DataContext as Command).ReflectedProp = reflected;
+                    (this.DataContext as ProjectsManager).SelectedCommand.ReflectedProp = reflected;
 
                 }
                 catch { }
@@ -70,7 +70,7 @@ namespace RunCommandDocker.MyPopup
         }
         public void GetChildrens(object obj, Reflected parent)
         {
-            if(!string.IsNullOrEmpty(parent.Name))
+            if(string.IsNullOrEmpty(parent.Name))
                 parent.Name = obj.GetType().FullName;
             ObservableCollection<Reflected> Childrens = new ObservableCollection<Reflected>();
 

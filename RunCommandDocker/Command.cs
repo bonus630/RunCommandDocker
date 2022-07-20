@@ -9,13 +9,26 @@ namespace RunCommandDocker
     {
         private string name;
         public virtual string Name { get { return name; } set { name = value; OnPropertyChanged("Name"); } }
-        private bool isSelected;
-        public virtual bool IsSelected { get { return isSelected; } set { isSelected = value; OnPropertyChanged("IsSelected"); } }
-        private bool isExpanded;
-        public virtual bool IsExpanded { get { return isExpanded; } 
-            set { 
-                isExpanded = value; 
-                OnPropertyChanged("IsExpanded"); } }
+        protected bool isSelected;
+        public virtual bool IsSelected
+        {
+            get { return isSelected; }
+            set
+            {
+                isSelected = value;
+                OnPropertyChanged("IsSelected");
+            }
+        }
+        protected bool isExpanded;
+        public virtual bool IsExpanded
+        {
+            get { return isExpanded; }
+            set
+            {
+                isExpanded = value;
+                OnPropertyChanged("IsExpanded");
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -24,7 +37,7 @@ namespace RunCommandDocker
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
-        
+
 
     }
 
@@ -33,29 +46,37 @@ namespace RunCommandDocker
 
         private ObservableCollection<T> items;
 
-        public virtual ObservableCollection<T> Items {
-            get {
+        public virtual ObservableCollection<T> Items
+        {
+            get
+            {
                 return items;
             }
-            set {
+            set
+            {
                 items = value;
-                OnPropertyChanged("Items"); } }
+                OnPropertyChanged("Items");
+            }
+        }
 
-    
+
 
         public int Count
         {
-            get { if (Items == null)
+            get
+            {
+                if (Items == null)
                     return 0;
                 else
-                    return Items.Count; }
-            
+                    return Items.Count;
+            }
+
         }
 
 
         public virtual void Add(T item)
         {
-            if(Items==null)
+            if (Items == null)
                 Items = new ObservableCollection<T>();
             Items.Add(item);
         }
@@ -68,7 +89,10 @@ namespace RunCommandDocker
                 Items.Add(range[i]);
             }
         }
-      
+        public bool Contains(T item)
+        {
+            return Items.Contains(item);
+        }
         public virtual void Remove(T item)
         {
             if (Items != null)
@@ -92,9 +116,13 @@ namespace RunCommandDocker
     {
         public Module Parent { get; set; }
         private object[] argumentsCache;
-        public object[] ArgumentsCache{get{
+        public object[] ArgumentsCache
+        {
+            get
+            {
                 return this.argumentsCache;
-            } }
+            }
+        }
 
         internal void PrepareArguments()
         {
@@ -128,15 +156,21 @@ namespace RunCommandDocker
         }
 
         public string Method { get; set; }
-        public override string ToString() { return string.Format("{0}/{1}/{2}", Parent.Parent.Name, Parent.Name, Method);  }
+        public override string ToString() { return string.Format("{0}/{1}/{2}", Parent.Parent.Name, Parent.Name, Method); }
 
         public event Action<Command> CommandSelectedEvent;
 
         private object returns;
-        public object Returns { get { return returns; } set { 
-                returns = value; 
-                OnPropertyChanged("Returns"); 
-                OnPropertyChanged("ReturnsType"); } }
+        public object Returns
+        {
+            get { return returns; }
+            set
+            {
+                returns = value;
+                OnPropertyChanged("Returns");
+                OnPropertyChanged("ReturnsType");
+            }
+        }
 
         private Type returnsType;
         public Type ReturnsType { get { return returnsType; } set { returnsType = value; OnPropertyChanged("ReturnsType"); } }
@@ -159,10 +193,25 @@ namespace RunCommandDocker
             if (CommandSelectedEvent != null)
                 CommandSelectedEvent(this);
         }
-        public override bool IsSelected { 
-            get { return base.IsSelected; } 
-            set { base.IsSelected = value;
-                onCommandSelected(); } }
+        public override bool IsSelected
+        {
+            get { return base.IsSelected; }
+            set
+            {
+                base.IsSelected = value;
+
+                onCommandSelected();
+
+            }
+        }
+        public bool CheckSelected()
+        {
+            if (IsSelected)
+            {
+                OnPropertyChanged("Items");
+            }
+            return IsSelected;
+        }
         public void AddRange(object[] range)
         {
             if (Items == null && range.Length > 0)
@@ -182,19 +231,73 @@ namespace RunCommandDocker
             }
 
         }
+        public override bool Equals(object obj)
+        {
+
+            try
+            {
+                Command c = obj as Command;
+                if (c == null)
+                    return false;
+                if (!c.ToString().Equals(this.ToString()))
+                    return false;
+                if (!c.returnsType.Equals(this.returnsType))
+                    return false;
+                if (c.Items != null && this.Items != null)
+                {
+                    if (!c.Items.Count.Equals(this.Items.Count))
+                        return false;
+                    for (int i = 0; i < c.Items.Count; i++)
+                    {
+                        if (!c.Items[i].Equals(this.Items[i]))
+                            return false;
+                    }
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
     public class Argument : CommandBase
     {
         private Type argumentType;
 
         public Command Parent { get; set; }
-        public Type ArgumentType { get { return argumentType; } set { 
+        public Type ArgumentType
+        {
+            get { return argumentType; }
+            set
+            {
                 argumentType = value;
-                OnPropertyChanged("ArgumentType"); } }
+                OnPropertyChanged("ArgumentType");
+            }
+        }
         private object _value;
-        public object Value { get { return _value; } set { 
+        public object Value
+        {
+            get { return _value; }
+            set
+            {
                 _value = value;
-                OnPropertyChanged("Value"); } }
-
+                OnPropertyChanged("Value");
+            }
+        }
+        public override bool Equals(object obj)
+        {
+            try
+            {
+                Argument argument = obj as Argument;
+                if (argument == null)
+                    return false;
+                return (argument.Name.Equals(this.Name)) && (argument.ArgumentType.Equals(this.ArgumentType));
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

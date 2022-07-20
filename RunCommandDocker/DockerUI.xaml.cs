@@ -104,5 +104,11 @@ namespace RunCommandDocker
         {
             projectsManager.MyPopupIsOpen = false;
         }
+        //Ref.:01 
+        // Compare to another Ref.:01
+        private void TreeView_Selected(object sender, RoutedEventArgs e)
+        {
+            projectsManager.SelectedCommand = (sender as TreeView).SelectedItem as Command;
+        }
     }
 }

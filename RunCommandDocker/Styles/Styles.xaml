@@ -18,6 +18,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+
     <Style x:Name="PopupBorder" TargetType="Border">
         <Setter Property="Background" Value="{DynamicResource Container.Static.Background}"/>
         <Setter Property="BorderThickness" Value="1" />
@@ -26,6 +27,12 @@
     <Style TargetType="ScrollViewer">
         <Setter Property="Background" Value="{DynamicResource Container.Static.Background}"/>
         <Setter Property="Foreground" Value="{DynamicResource Container.Text.Static.Foreground}" />
+    </Style>
+    <Style TargetType="DockPanel">
+        <Setter Property="Background" Value="{DynamicResource Container.Static.Background}"/>
+    </Style>
+    <Style TargetType="TreeView">
+        <Setter Property="Background" Value="{DynamicResource Container.Static.Background}"/>
     </Style>
     <Style TargetType="StackPanel">
         <Setter Property="Background" Value="{DynamicResource Default.Static.Background}"/>
@@ -249,7 +256,7 @@
         </Setter>
     </Style>
 
-    <Style  TargetType="{x:Type Button}">
+    <Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
         <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
         <Setter Property="Background" Value="{DynamicResource Button.Static.Background}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Button.Static.Border}"/>
@@ -286,6 +293,18 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+    <Style x:Key="NoBorderButton" BasedOn="{StaticResource ButtonStyle1}" TargetType="{x:Type Button}">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="{x:Null}"/>
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="BorderThickness" Value="1" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
     <Style TargetType="{x:Type RadioButton}">
         <Setter Property="FocusVisualStyle">

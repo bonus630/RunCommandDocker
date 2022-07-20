@@ -223,6 +223,7 @@
     <Compile Include="Command.cs" />
     <Compile Include="CommandProxy.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Converters\ReverseBoolVisibilityConverter.cs" />
     <Compile Include="Converters\IntToVisibilityConverter.cs" />
     <Compile Include="Converters\TypeToVisibilityConverter.cs" />

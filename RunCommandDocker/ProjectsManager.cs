@@ -61,8 +61,8 @@ namespace RunCommandDocker
             get { return projects; }
             set { projects = value; OnPropertyChanged("Projects"); }
         }
-        private ObservableCollection<Command> selectedCommands = new ObservableCollection<Command>();
-        public ObservableCollection<Command> SelectedCommands { get { return selectedCommands; } set { selectedCommands = value; OnPropertyChanged("SelectedCommands"); } }
+        private Command selectedCommand;
+        public Command SelectedCommand{ get { return selectedCommand; } set { selectedCommand = value; OnPropertyChanged("SelectedCommand"); } }
         string dir = "";
         public string Dir { get { return dir; } set { dir = value; OnPropertyChanged("Dir"); } }
 
@@ -114,18 +114,18 @@ namespace RunCommandDocker
         private Argument GetArgument(Command command)
         {
 
-            if (this.selectedCommands[0] != null)
+            if (this.SelectedCommand != null)
             {
-                return this.selectedCommands[0].Items.FirstOrDefault(r => r.IsSelected);
+                return this.SelectedCommand.Items.FirstOrDefault(r => r.IsSelected);
 
             }
             return null;
         }
         private void SetShapeRangeArgumentValue()
         {
-            if (this.selectedCommands[0] != null)
+            if (this.SelectedCommand != null)
             {
-                Argument argument = this.selectedCommands[0].Items.FirstOrDefault(r => r.IsSelected);
+                Argument argument = this.SelectedCommand.Items.FirstOrDefault(r => r.IsSelected);
                 if (argument != null)
                     argument.Value = new Func<Command, object>(shapeRangeManager.GetShapes);
             }
@@ -184,6 +184,7 @@ namespace RunCommandDocker
         }
         private void SetModulesCommands(Project project)
         {
+            //Its works but, can are better
             try
             {
                 CommandProxy proxy = proxyManager.LoadAssembly(project);
@@ -223,7 +224,8 @@ namespace RunCommandDocker
                         command.CommandSelectedEvent += CommandSelected;
                         if (lastCommand != null && lastCommand[2].Equals(command.Name))
                             command.IsSelected = true;
-                        m.Add(command);
+                        //if(!m.Contains(command))
+                            m.Add(command);
                     }
                 }
             }
@@ -239,19 +241,12 @@ namespace RunCommandDocker
         }
         private void CommandSelected(Command command)
         {
-            Command c = null;
-            try
-            {
-                c = SelectedCommands.FirstOrDefault(u => u.ToString().Equals(command.ToString()));
-            }
-            catch { }
-            if (c != null)
-                SelectedCommands.Remove(c);
-            if (command.IsSelected)
-                SelectedCommands.Add(command);
+            //Ref.:01 
+            // Compare to another Ref.:01
 
-            OnPropertyChanged("SelectedCommands");
-
+            //if (command.IsSelected)
+            //    this.SelectedCommand = command;
+         
         }
         private void ReadFiles()
         {
