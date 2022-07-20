@@ -73,7 +73,7 @@ namespace RunCommandDocker
                 
                 MethodInfo methodInfo = type.GetMethods().First(m => m.Name.Equals(command.Name));
                 //command.Items. ToArray<object>()
-                ActionRunCommand = () => methodInfo.Invoke(Instance, command.Arguments);
+                ActionRunCommand = () => methodInfo.Invoke(Instance, command.ArgumentsCache);
                 return Instance;
             }
             catch (Exception ex)

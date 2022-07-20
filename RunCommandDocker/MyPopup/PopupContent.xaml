@@ -24,10 +24,10 @@
     <Border Style="{DynamicResource PopupBorder}">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="28"/>
+                <RowDefinition Height="16"/>
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <Label Grid.Row="0" Content="{Binding ReflectedProp.Name}"/>
+            <Label HorizontalContentAlignment="Center" VerticalAlignment="Center" Content="{Binding ReflectedProp.Name}" Height="10"/>
             <TreeView Grid.Row="1" ItemsSource="{Binding ReflectedProp.Childrens}" TreeViewItem.Expanded="TreeView_Expanded">
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="TreeViewItem">
@@ -47,9 +47,10 @@
                                 <ColumnDefinition Width="100"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Button Grid.Column="0" Width="16" Height="16" BorderThickness="0" CommandParameter="{Binding}"  
-                                                                            Visibility="{Binding IsValueType,Converter={StaticResource BoolToVisibilityConverter}}"
-                                                                            Command="{Binding Path=DataContext.CopyValueCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListView}}">
+                            <Button Grid.Column="0" Width="16" Height="16" BorderThickness="0" 
+                                    CommandParameter="{Binding}"  
+                                    Visibility="{Binding IsValueType,Converter={StaticResource BoolToVisibilityConverter}}"
+                                    Command="{Binding Path=DataContext.CopyValueCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListView}}">
                                 <Button.ToolTip>
                                     <Label Content="Copy Value" />
                                 </Button.ToolTip>

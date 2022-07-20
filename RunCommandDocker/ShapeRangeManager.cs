@@ -24,7 +24,7 @@ namespace RunCommandDocker
             this.corelApp = app;
         }
         public int Count { get { return ShapesIds.Count; } }
-        public ShapeRange GetShapes()
+        public ShapeRange GetShapes(Command command = null)
         {
 
             ShapeRange sr = corelApp.CreateShapeRange();

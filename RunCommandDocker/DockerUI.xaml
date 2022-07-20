@@ -130,7 +130,7 @@
                                                         <!--<Label Grid.Row="1" Grid.Column="0" Content="Type:" />-->
                                                         <Label Grid.Row="0" Grid.Column="1" Content="{Binding ArgumentType.Name}" ToolTip="{Binding ArgumentType.FullName}"/>
                                                         <Label Grid.Row="1" Grid.Column="0" Content="Value:" />
-                                                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Value}" Width="60"/>
+                                                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Value}" Width="154"/>
                                                     </Grid>
                                                 </DataTemplate>
                                             </ListView.ItemTemplate>
@@ -222,8 +222,9 @@
                         </Button>
                         <!--Visibility="{Binding Path=HasParam,  Converter={StaticResource ReverseBoolVisibilityConverter}}"-->
                         <Button Grid.Column="1"  Width="16" Height="16"  HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="0" Background="{x:Null}"
-                                
-                        CommandParameter="{Binding}" Command="{Binding Path=DataContext.SetCommandToValueCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=TreeView}}">
+                                Visibility="{Binding ReturnsType,ConverterParameter={x:Type System:Void},Converter={StaticResource TypeToVisibilityConverter}}"
+                                CommandParameter="{Binding}" 
+                                Command="{Binding Path=DataContext.SetCommandToValueCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=TreeView}}">
                             <Button.ToolTip>
                                 <Label Content="Set returns value to selected argument"/>
                             </Button.ToolTip>

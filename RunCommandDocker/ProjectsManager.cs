@@ -31,18 +31,22 @@ namespace RunCommandDocker
         public bool MyPopupIsOpen
         {
             get { return myPopupIsOpen; }
-            set { myPopupIsOpen = value;
+            set
+            {
+                myPopupIsOpen = value;
                 OnPropertyChanged("MyPopupIsOpen");
             }
         }
-  
+
 
         private Point myPopupPosition;
 
         public Point MyPopupPosition
         {
             get { return myPopupPosition; }
-            set { myPopupPosition = value;
+            set
+            {
+                myPopupPosition = value;
                 OnPropertyChanged("MyPopupPosition");
             }
         }
@@ -62,7 +66,7 @@ namespace RunCommandDocker
         string dir = "";
         public string Dir { get { return dir; } set { dir = value; OnPropertyChanged("Dir"); } }
 
-        
+
 
         FileSystemWatcher fsw;
         Thread startUpThread;
@@ -78,33 +82,52 @@ namespace RunCommandDocker
             projects = new ObservableCollection<Project>();
             Dir = Properties.Settings.Default.FolderPath;
             this.proxyManager = proxyManager;
-            ExecuteCommand = new BindingCommand<Command>(proxyManager.RunCommand);
+            ExecuteCommand = new BindingCommand<Command>(RunCommand);
             CopyValueCommand = new BindingCommand<Reflected>(CopyValue);
-            SetCommandToValueCommand = new BindingCommand<Command>(SetCommandReturnArgumentValue);
+            SetCommandToValueCommand = new BindingCommand<Command>(SetCommandReturnArgumentValue, CanRunSetCommandReturnArgVal);
             SetShapeRangeToValueCommand = new SimpleCommand(SetShapeRangeArgumentValue);
             startFolderMonitor(dir);
         }
+        public void RunCommand(Command command)
+        {
+            if (command.HasParam)
+                command.PrepareArguments();
+            proxyManager.RunCommand(command);
+        }
         private void SetCommandReturnArgumentValue(Command command)
         {
-            
+            Argument argument = GetArgument(command);
+            if (argument != null)
+                argument.Value = new Func<Command, object>(
+                    (c) =>
+                    {
+                        RunCommand(command);
+                        return command.Returns;
+                    });
+        }
+        private bool CanRunSetCommandReturnArgVal(Command command)
+        {
+            if (command.ReturnsType == null || command.ReturnsType == typeof(void))
+                return false;
+            return true;
+        }
+        private Argument GetArgument(Command command)
+        {
+
             if (this.selectedCommands[0] != null)
             {
-                Argument argument = this.selectedCommands[0].Items.FirstOrDefault(r => r.IsSelected);
-                if (argument != null)
-                    argument.Value = new Func<Command, object>(
-                        (c) => { 
-                            proxyManager.RunCommand(command); 
-                            return command.Returns; 
-                        });
+                return this.selectedCommands[0].Items.FirstOrDefault(r => r.IsSelected);
+
             }
+            return null;
         }
         private void SetShapeRangeArgumentValue()
         {
             if (this.selectedCommands[0] != null)
             {
                 Argument argument = this.selectedCommands[0].Items.FirstOrDefault(r => r.IsSelected);
-                if(argument!=null)
-                    argument.Value = new Func<Corel.Interop.VGCore.ShapeRange>(shapeRangeManager.GetShapes);
+                if (argument != null)
+                    argument.Value = new Func<Command, object>(shapeRangeManager.GetShapes);
             }
         }
         private void CopyValue(Reflected o)
@@ -193,10 +216,10 @@ namespace RunCommandDocker
                             Parent = m
                         };
                         var arguments = proxy.GetArguments(command);
-                      
-                            command.AddRange(arguments);
-                    
-                        
+
+                        command.AddRange(arguments);
+
+
                         command.CommandSelectedEvent += CommandSelected;
                         if (lastCommand != null && lastCommand[2].Equals(command.Name))
                             command.IsSelected = true;
@@ -222,7 +245,7 @@ namespace RunCommandDocker
                 c = SelectedCommands.FirstOrDefault(u => u.ToString().Equals(command.ToString()));
             }
             catch { }
-            if (c != null) 
+            if (c != null)
                 SelectedCommands.Remove(c);
             if (command.IsSelected)
                 SelectedCommands.Add(command);

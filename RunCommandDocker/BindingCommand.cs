@@ -9,18 +9,24 @@ namespace RunCommandDocker
 
     public class BindingCommand<T> : ICommand
     {
-        public event EventHandler CanExecuteChanged;
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
 
         Action<T> RunPath;
+        Predicate<T> canRun;
 
-        public BindingCommand(Action<T> action)
+        public BindingCommand(Action<T> action, Predicate<T> canRun = null)
         {
             this.RunPath = action;
+            this.canRun = canRun;
         }
 
         public bool CanExecute(object parameter)
         {
-            return true;
+            return canRun == null ? true : canRun((T)parameter);
         }
 
         public void Execute(object parameter)

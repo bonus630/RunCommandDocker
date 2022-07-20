@@ -91,33 +91,42 @@ namespace RunCommandDocker
     public class Command : CommandCollectionBase<Argument>
     {
         public Module Parent { get; set; }
-        public object[] Arguments{get{
-                object[] objects = null;
-                
-                if (this.Items!=null)
+        private object[] argumentsCache;
+        public object[] ArgumentsCache{get{
+                return this.argumentsCache;
+            } }
+
+        internal void PrepareArguments()
+        {
+            object[] objects = null;
+
+            if (this.Items != null)
+            {
+                int length = this.Items.Count;
+                if (length > 0)
+                    objects = new object[length];
+                for (int i = 0; i < length; i++)
                 {
-                    int length = this.Items.Count;
-                    if(length>0)
-                        objects = new object[length];
-                    for (int i = 0; i < length; i++)
+                    if (Items[i].Value != null)
                     {
-                        if (Items[i].ArgumentType.IsValueType)
+                        if (Items[i].Value.GetType().IsValueType || Items[i].Value is string)
                         {
                             objects[i] = Convert.ChangeType(Items[i].Value, Items[i].ArgumentType);
                         }
                         else
                         {
-                            if (Items[i].Value != null)
-                                objects[i] = (Items[i].Value as Func<object>).Invoke();
-                            else
-                                objects[i] = null;
+
+                            objects[i] = (Items[i].Value as Func<Command, object>).Invoke(this);
+
                         }
                     }
+                    else
+                        objects[i] = null;
                 }
+            }
+            this.argumentsCache = objects;
+        }
 
-
-                return objects;
-            } }
         public string Method { get; set; }
         public override string ToString() { return string.Format("{0}/{1}/{2}", Parent.Parent.Name, Parent.Name, Method);  }
 
