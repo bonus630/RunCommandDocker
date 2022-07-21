@@ -121,21 +121,7 @@ namespace RunCommandDocker
                         return command.Returns;
                     });
         }
-
-        public void ClosePopup()
-        {
-            this.MyPopupIsOpen = false;
-        }
-
-        public void OpenPopup()
-        {
-            if (this.selectedCommand == null)
-                return;
-            if (this.selectedCommand.ReflectedProp == null)
-                return;
-            if (!this.SelectedCommand.ReflectedProp.IsValueType)
-                this.MyPopupIsOpen = true;
-        }
+     
 
         private bool CanRunSetCommandReturnArgVal(Command command)
         {

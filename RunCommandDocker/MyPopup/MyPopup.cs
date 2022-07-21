@@ -35,7 +35,7 @@ namespace RunCommandDocker.MyPopup
         }
         protected override void OnOpened(EventArgs e)
         {
-            if (ToReflect != null)
+            if (ToReflect != null && !ToReflect.GetType().IsValueType)
             {
                 closeCounter = 0;
                 runToClose = false;
