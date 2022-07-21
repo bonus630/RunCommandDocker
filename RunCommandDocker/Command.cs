@@ -115,7 +115,9 @@ namespace RunCommandDocker
     public class Command : CommandCollectionBase<Argument>
     {
         public Module Parent { get; set; }
+        private int recursionProtection = 0;
         private object[] argumentsCache;
+        public event Action<bool> ArgumentsReady;
         public object[] ArgumentsCache
         {
             get
@@ -126,35 +128,52 @@ namespace RunCommandDocker
 
         internal void PrepareArguments()
         {
-            object[] objects = null;
-
-            if (this.Items != null)
+            recursionProtection++;
+            try
             {
-                int length = this.Items.Count;
-                if (length > 0)
-                    objects = new object[length];
-                for (int i = 0; i < length; i++)
+                object[] objects = null;
+
+                if (this.Items != null)
                 {
-                    if (Items[i].Value != null)
+                    int length = this.Items.Count;
+                    if (length > 0)
+                        objects = new object[length];
+                    for (int i = 0; i < length; i++)
                     {
-                        if (Items[i].Value.GetType().IsValueType || Items[i].Value is string)
+                        if (Items[i].Value != null)
                         {
-                            objects[i] = Convert.ChangeType(Items[i].Value, Items[i].ArgumentType);
+                            if (Items[i].Value.GetType().IsValueType || Items[i].Value is string)
+                            {
+                                objects[i] = Convert.ChangeType(Items[i].Value, Items[i].ArgumentType);
+                            }
+                            else
+                            {
+                                if(recursionProtection>100)
+                                {
+                                    objects[i] = null;
+                                    return;
+                                }
+                                objects[i] = (Items[i].Value as Func<Command, object>).Invoke(this);
+                            }
                         }
                         else
-                        {
-
-                            objects[i] = (Items[i].Value as Func<Command, object>).Invoke(this);
-
-                        }
+                            objects[i] = null;
                     }
-                    else
-                        objects[i] = null;
                 }
+                this.argumentsCache = objects;
             }
-            this.argumentsCache = objects;
+            catch (StackOverflowException e)
+            {
+                onArgumentsReady(false);
+                System.Windows.Forms.MessageBox.Show("UNBOUNDED RECURSION!");
+            }
+            onArgumentsReady(true);
         }
-
+        private void onArgumentsReady(bool ready)
+        {
+            if (ArgumentsReady != null)
+                ArgumentsReady(ready);
+        }
         public string Method { get; set; }
         public override string ToString() { return string.Format("{0}/{1}/{2}", Parent.Parent.Name, Parent.Name, Method); }
 
@@ -190,6 +209,7 @@ namespace RunCommandDocker
         public bool HasParam { get { return hasParam; } set { hasParam = value; OnPropertyChanged("HasParam"); } }
         private void onCommandSelected()
         {
+            recursionProtection = 0;
             if (CommandSelectedEvent != null)
                 CommandSelectedEvent(this);
         }

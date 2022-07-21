@@ -97,12 +97,12 @@ namespace RunCommandDocker
 
         private void Label_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            projectsManager.MyPopupIsOpen = true;
+            projectsManager.OpenPopup();
         }
 
         private void MyPopup_PopupCloseEvent()
         {
-            projectsManager.MyPopupIsOpen = false;
+            projectsManager.ClosePopup();
         }
         //Ref.:01 
         // Compare to another Ref.:01

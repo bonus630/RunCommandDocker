@@ -82,20 +82,36 @@ namespace RunCommandDocker
             projects = new ObservableCollection<Project>();
             Dir = Properties.Settings.Default.FolderPath;
             this.proxyManager = proxyManager;
-            ExecuteCommand = new BindingCommand<Command>(RunCommand);
+            ExecuteCommand = new BindingCommand<Command>(RunCommandAsync);
             CopyValueCommand = new BindingCommand<Reflected>(CopyValue);
             SetCommandToValueCommand = new BindingCommand<Command>(SetCommandReturnArgumentValue, CanRunSetCommandReturnArgVal);
             SetShapeRangeToValueCommand = new SimpleCommand(SetShapeRangeArgumentValue);
             startFolderMonitor(dir);
         }
+        /// <summary>
+        /// Use this to fill parameters in command
+        /// </summary>
+        /// <param name="command"></param>
         public void RunCommand(Command command)
         {
             if (command.HasParam)
                 command.PrepareArguments();
-            proxyManager.RunCommand(command);
+           proxyManager.RunCommand(command);
         }
+        /// <summary>
+        /// Use this form run in button
+        /// </summary>
+        /// <param name="command"></param>
+        public void RunCommandAsync(Command command)
+        {
+            if (command.HasParam)
+                command.PrepareArguments();
+            proxyManager.RunCommandAsync(command);
+        }
+      
         private void SetCommandReturnArgumentValue(Command command)
         {
+            //Need checks for recursive 
             Argument argument = GetArgument(command);
             if (argument != null)
                 argument.Value = new Func<Command, object>(
@@ -105,6 +121,22 @@ namespace RunCommandDocker
                         return command.Returns;
                     });
         }
+
+        public void ClosePopup()
+        {
+            this.MyPopupIsOpen = false;
+        }
+
+        public void OpenPopup()
+        {
+            if (this.selectedCommand == null)
+                return;
+            if (this.selectedCommand.ReflectedProp == null)
+                return;
+            if (!this.SelectedCommand.ReflectedProp.IsValueType)
+                this.MyPopupIsOpen = true;
+        }
+
         private bool CanRunSetCommandReturnArgVal(Command command)
         {
             if (command.ReturnsType == null || command.ReturnsType == typeof(void))
