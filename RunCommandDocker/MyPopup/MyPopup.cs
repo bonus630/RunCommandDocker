@@ -30,7 +30,7 @@ namespace RunCommandDocker.MyPopup
         public MyPopup()
         {
             PopupContent popupContent = new PopupContent();
-            popupContent.ReflectedIsExpandedEvent += (reflected) => { GetChildrens(reflected.Value, reflected); };
+            popupContent.ReflectedIsExpandedEvent += (reflected) => { GetChildrens(reflected); };
             this.Child = popupContent;
         }
         protected override void OnOpened(EventArgs e)
@@ -40,23 +40,13 @@ namespace RunCommandDocker.MyPopup
                 closeCounter = 0;
                 runToClose = false;
                 base.OnOpened(e);
-               
+
                 reflected = new Reflected();
                 object obj = ToReflect;
-               
+                reflected.Value = obj;
                 try
                 {
-                    //getChildrenThread = new Thread(new ParameterizedThreadStart((obj) =>
-                    //{
-                    //    this.Dispatcher.Invoke(new Action(() =>
-                    //    {
-                            GetChildrens(obj, reflected);
-                           
-                    //    }));
-
-                    //}));
-                    //getChildrenThread.IsBackground = true;
-                    //getChildrenThread.Start(ToReflect);
+                    GetChildrens(reflected);
                     (this.DataContext as ProjectsManager).SelectedCommand.ReflectedProp = reflected;
 
                 }
@@ -68,36 +58,98 @@ namespace RunCommandDocker.MyPopup
             }
 
         }
-        public void GetChildrens(object obj, Reflected parent)
+        public void GetChildrens(Reflected parent)
         {
-            if(string.IsNullOrEmpty(parent.Name))
-                parent.Name = obj.GetType().FullName;
-            ObservableCollection<Reflected> Childrens = new ObservableCollection<Reflected>();
 
-            PropertyInfo[] properties = obj.GetType().GetProperties();
-            for (int i = 0; i < properties.Length; i++)
+            //For get a item in um generic IEnumerable collection
+            //1º lets check if type IsGenericType
+            //2º Use the main type and GetInterfaces
+            //3º Check which interfaces are implementeds
+            //IList,ICollection,IEnumerable,...
+            //4º Get the generic type GetGenericArguments()
+            //5º Use the implemented interface and generic argument to cast reflected collection
+            //6º Go through all items and reflect them
+            //Can we put these items in the item property?
+            object obj = parent.Value;
+            Type mainType;
+            if (string.IsNullOrEmpty(parent.Name))
+                parent.Name = obj.GetType().FullName;
+
+            ObservableCollection<Reflected> Childrens = new ObservableCollection<Reflected>();
+            if (parent.Name.Equals("Item"))
             {
-                object v = null;
-                bool isValueType = false;
-                try
+                mainType = parent.Parent.Value.GetType();
+                Type[] interfaces = mainType.GetInterfaces();
+                // Type genericType = mainType.GetGenericTypeDefinition();
+
+                Type _interface = interfaces.FirstOrDefault(r => r.Name.Equals("ICollection") || r.Name.Equals("IList") || r.Name.Equals("IEnumerable"));
+                if (_interface == null)
+                    return;
+                var generics = parent.Parent.Value as dynamic;
+
+                foreach (var generic in generics)
                 {
-                    v = properties[i].GetValue(obj, null);
-                    isValueType = v.GetType().IsValueType;
+                    bool isValueType = false;
+                    Type itemType = generic.GetType();
+                    try
+                    {
+                      
+                        isValueType = itemType.IsValueType;
+                    }
+                    catch { }
+                    Reflected item = new Reflected() { Name = itemType.Name, Value = generic, IsValueType = isValueType, Parent = parent };
+                    if (!isValueType)
+                    {
+                        //Here can use recursivity to fill all treeview nodes
+                        item.Childrens = new ObservableCollection<Reflected>();
+                        item.Childrens.Add(null);
+                        //GetChildrens(v, item);
+                    }
+
+                    Childrens.Add(item);
                 }
-                catch { }
-                Reflected item = new Reflected() { Name = properties[i].Name, Value = v, IsValueType = isValueType };
-                if (!isValueType)
+
+               
+            }
+            else
+            {
+                mainType = obj.GetType();
+                PropertyInfo[] properties = mainType.GetProperties();
+                for (int i = 0; i < properties.Length; i++)
                 {
-                    //Here can use recursivity to fill all treeview nodes
+                    object v = null;
+                    bool isValueType = false;
+                    try
+                    {
+                        v = properties[i].GetValue(obj, null);
+                        isValueType = v.GetType().IsValueType;
+                    }
+                    catch { }
+                    Reflected item = new Reflected() { Name = properties[i].Name, Value = v, IsValueType = isValueType, Parent = parent };
+                    if (!isValueType)
+                    {
+                        //Here can use recursivity to fill all treeview nodes
+                        item.Childrens = new ObservableCollection<Reflected>();
+                        item.Childrens.Add(null);
+                        //GetChildrens(v, item);
+                    }
+
+                    Childrens.Add(item);
+                }
+                if (mainType.IsArray)
+                {
+                    
+                    Reflected item = new Reflected() { Name = "Item", Value = obj, IsValueType = false, Parent = parent };
                     item.Childrens = new ObservableCollection<Reflected>();
                     item.Childrens.Add(null);
-                    //GetChildrens(v, item);
+                    Childrens.Add(item);
                 }
 
-                Childrens.Add(item);
-            }
 
-            parent.Childrens = Childrens;
+            }
+            
+
+                parent.Childrens = Childrens;
 
         }
         protected override void OnMouseLeave(MouseEventArgs e)
@@ -124,14 +176,15 @@ namespace RunCommandDocker.MyPopup
         private void Close()
         {
             runToClose = true;
-            counterThread = new Thread(new ThreadStart(() => { 
-            
-                while(runToClose)
+            counterThread = new Thread(new ThreadStart(() =>
+            {
+
+                while (runToClose)
                 {
-                    
+
                     Thread.Sleep(ellapseTime);
                     closeCounter++;
-                    if(closeCounter > loops)
+                    if (closeCounter > loops)
                     {
                         try
                         {
@@ -151,11 +204,11 @@ namespace RunCommandDocker.MyPopup
                         }));
                     }
                 }
-            
+
             }));
             counterThread.IsBackground = true;
             counterThread.Start();
-          
+
         }
         private void RequestClose()
         {

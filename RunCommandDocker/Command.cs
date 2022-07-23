@@ -190,7 +190,7 @@ namespace RunCommandDocker
                 OnPropertyChanged("ReturnsType");
             }
         }
-
+        
         private Type returnsType;
         public Type ReturnsType { get { return returnsType; } set { returnsType = value; OnPropertyChanged("ReturnsType"); } }
         private Reflected reflected;

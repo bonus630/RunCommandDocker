@@ -29,6 +29,9 @@ namespace RunCommandDocker
                 OnPropertyChanged("Name");
             }
         }
+
+         public Reflected Parent { get; set; }
+
         private bool isValueType;
 
         public bool IsValueType
