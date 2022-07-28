@@ -22,8 +22,10 @@ namespace RunCommandDocker
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
         public BindingCommand<Command> ExecuteCommand { get; set; }
+        public BindingCommand<Command> StopCommand { get; set; }
         public BindingCommand<Command> SetCommandToValueCommand { get; set; }
         public BindingCommand<Reflected> CopyValueCommand { get; set; }
+        public BindingCommand<object> CopyReturnsValueCommand { get; set; }
         public SimpleCommand SetShapeRangeToValueCommand { get; set; }
 
         private bool myPopupIsOpen;
@@ -83,7 +85,9 @@ namespace RunCommandDocker
             Dir = Properties.Settings.Default.FolderPath;
             this.proxyManager = proxyManager;
             ExecuteCommand = new BindingCommand<Command>(RunCommandAsync);
+            StopCommand = new BindingCommand<Command>(StopCommandAsync);
             CopyValueCommand = new BindingCommand<Reflected>(CopyValue);
+            CopyReturnsValueCommand = new BindingCommand<object>(CopyReturnsValue);
             SetCommandToValueCommand = new BindingCommand<Command>(SetCommandReturnArgumentValue, CanRunSetCommandReturnArgVal);
             SetShapeRangeToValueCommand = new SimpleCommand(SetShapeRangeArgumentValue);
             startFolderMonitor(dir);
@@ -121,7 +125,10 @@ namespace RunCommandDocker
                         return command.Returns;
                     });
         }
-     
+        public void StopCommandAsync(Command command)
+        {
+            proxyManager.StopCommandAsync(command);
+        }
 
         private bool CanRunSetCommandReturnArgVal(Command command)
         {
@@ -151,6 +158,11 @@ namespace RunCommandDocker
         private void CopyValue(Reflected o)
         {
             Clipboard.SetText(o.Value.ToString());
+        }
+        private void CopyReturnsValue(object o)
+        {
+            if(o!=null)
+                Clipboard.SetText(o.ToString());
         }
         public void SelectFolder()
         {

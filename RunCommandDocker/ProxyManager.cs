@@ -11,18 +11,18 @@ namespace RunCommandDocker
     public class ProxyManager
     {
         List<AppDomain> loadDomainList;
-        List<BackgroundWorker> workers;
+        List<BackgroundWorkerIded> workers;
         AppDomain loadDomain;
         AppDomainSetup loadDomainSetup;
 
-        
+
         object corelApp;
         public string LastCommandPath { get; set; }
 
         public ProxyManager(object corelApp, string path)
         {
             loadDomainList = new List<AppDomain>();
-            workers = new List<BackgroundWorker>();
+            workers = new List<BackgroundWorkerIded>();
             loadDomainSetup = new AppDomainSetup()
             {
                 ApplicationBase = path
@@ -69,8 +69,11 @@ namespace RunCommandDocker
 
             int nextSlot = workers.FindIndex(r => r == default);
 
-            AppDomain runDomainAsync = AppDomain.CreateDomain(String.Format("RunnableDomainAsync{0}",Guid.NewGuid()), null, loadDomainSetup);
-            BackgroundWorker worker = new BackgroundWorker();
+            AppDomain runDomainAsync = AppDomain.CreateDomain(String.Format("RunnableDomainAsync{0}", Guid.NewGuid()), null, loadDomainSetup);
+            BackgroundWorkerIded worker = new BackgroundWorkerIded();
+            worker.CommandPath = command.ToString();
+            worker.WorkerSupportsCancellation = true;
+            command.CanStop = true;
             if (nextSlot == -1)
             {
                 this.loadDomainList.Add(runDomainAsync);
@@ -84,17 +87,17 @@ namespace RunCommandDocker
             }
             try
             {
-                worker.DoWork += delegate {
+                worker.DoWork += delegate
+                {
                     runCommand(command, runDomainAsync);
+                    
                 };
-                worker.RunWorkerCompleted += (s,e) => {
-                    worker = null;
-                    UnloadDomain(runDomainAsync);
-                    this.workers[nextSlot] = default;
-                    this.loadDomainList[nextSlot] = default;
+                worker.RunWorkerCompleted += (s, e) =>
+                {
+                    WorkerIsCompletedOrCanceled(worker, runDomainAsync, nextSlot, command);
                 };
                 worker.RunWorkerAsync();
-            
+
             }
             catch (Exception ex)
             {
@@ -103,6 +106,26 @@ namespace RunCommandDocker
                     var typeLoadException = ex as ReflectionTypeLoadException;
                     var loaderExceptions = typeLoadException.LoaderExceptions;
                 }
+            }
+        }
+        private void WorkerIsCompletedOrCanceled(BackgroundWorkerIded  worker,AppDomain runDomainAsync,int nextSlot,Command command)
+        {
+            command.CanStop = false;
+            worker = null;
+            UnloadDomain(runDomainAsync);
+            this.workers[nextSlot] = default;
+            this.loadDomainList[nextSlot] = default;
+            
+        }
+        public void StopCommandAsync(Command command)
+        {
+            int nextSlot = workers.FindIndex(r => r.CommandPath.Equals(command.ToString()));
+            if(nextSlot > -1)
+            {
+                BackgroundWorkerIded worker = this.workers[nextSlot];
+                AppDomain domain = this.loadDomainList[nextSlot];
+                worker.CancelAsync();
+                WorkerIsCompletedOrCanceled(worker, domain, nextSlot, command);
             }
         }
         private void runCommand(Command command, AppDomain domain)
@@ -119,8 +142,16 @@ namespace RunCommandDocker
         }
         public void UnloadDomain(AppDomain domain)
         {
-            AppDomain.Unload(domain);
-            domain = default;
+            try
+            {
+                AppDomain.Unload(domain);
+                domain = default;
+            }
+            catch { }
         }
+    }
+    public class BackgroundWorkerIded : BackgroundWorker
+    {
+        public string CommandPath { get; set; }
     }
 }

@@ -72,7 +72,8 @@ namespace RunCommandDocker.MyPopup
             //Can we put these items in the item property?
             object obj = parent.Value;
             Type mainType;
-            if (string.IsNullOrEmpty(parent.Name))
+            
+           if (string.IsNullOrEmpty(parent.Name))
                 parent.Name = obj.GetType().FullName;
 
             ObservableCollection<Reflected> Childrens = new ObservableCollection<Reflected>();
@@ -114,19 +115,20 @@ namespace RunCommandDocker.MyPopup
             else
             {
                 mainType = obj.GetType();
-                PropertyInfo[] properties = mainType.GetProperties();
-                for (int i = 0; i < properties.Length; i++)
+                var properties = mainType.GetProperties().OrderBy(p=>p.Name);
+                foreach (var property in properties)
+               
                 {
                     object v = null;
                     bool isValueType = false;
                     try
                     {
-                        v = properties[i].GetValue(obj, null);
+                        v = property.GetValue(obj, null);
                         isValueType = v.GetType().IsValueType;
                     }
                     catch { }
-                    Reflected item = new Reflected() { Name = properties[i].Name, Value = v, IsValueType = isValueType, Parent = parent };
-                    if (!isValueType)
+                    Reflected item = new Reflected() { Name = property.Name, Value = v, IsValueType = isValueType, Parent = parent };
+                    if (!isValueType && v !=null)
                     {
                         //Here can use recursivity to fill all treeview nodes
                         item.Childrens = new ObservableCollection<Reflected>();

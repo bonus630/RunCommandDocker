@@ -4,10 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RunCommandDocker"
-              xmlns:converters="clr-namespace:RunCommandDocker.Converters"
+              xmlns:converters="clr-namespace:RunCommandDocker.Converters" d:DataContext="{d:DesignInstance Type=local:ProjectsManager}"
              mc:Ignorable="d" 
              >
     <UserControl.Resources>
+        
         <ResourceDictionary>
             <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
             <converters:TypeToVisibilityConverter x:Key="TypeToVisibilityConverter" />
@@ -18,23 +19,26 @@
                 <ResourceDictionary Source="../Styles/Styles.xaml"/>
                 <ResourceDictionary Source="../Resources/Images.xaml"/>
             </ResourceDictionary.MergedDictionaries>-->
-
+      
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Style="{DynamicResource PopupBorder}">
+
+    <Border Style="{DynamicResource PopupBorder}"  Margin="0,40" >
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="24"/>
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <Label Background="LightCyan" HorizontalContentAlignment="Center" VerticalAlignment="Top" Content="{Binding SelectedCommand.ReflectedProp.Name,FallbackValue=VAlor}"/>
-            <TreeView Grid.Row="1" ItemsSource="{Binding SelectedCommand.ReflectedProp.Childrens}" TreeViewItem.Expanded="TreeView_Expanded">
+            <Label HorizontalContentAlignment="Center" VerticalAlignment="Top" Content="{Binding SelectedCommand.ReflectedProp.Name,FallbackValue=VAlor}"/>
+            <TreeView  Grid.Row="1" ItemsSource="{Binding SelectedCommand.ReflectedProp.Childrens}"
+                      TreeViewItem.Expanded="TreeView_Expanded">
+                
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="TreeViewItem">
                         <Setter Property="IsSelected" Value="{Binding IsExpanded}" />
                         <Style.Triggers>
                             <Trigger Property="IsExpanded" Value="True">
-                                <Setter Property="Background" Value="Aqua" />
+                                <Setter Property="Background" Value="Gray" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>
@@ -56,7 +60,7 @@
                                 </Button.ToolTip>
                                 <Image Style="{DynamicResource CopyImage}" />
                             </Button>
-                            <Label Grid.Column="1" Content="{Binding Name}" />
+                            <Label Grid.Column="1" Content="{Binding Name}"/>
                             <Label Grid.Column="2" Content="{Binding Value}"/>
                         </Grid>
                     </HierarchicalDataTemplate>

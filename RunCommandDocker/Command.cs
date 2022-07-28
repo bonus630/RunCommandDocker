@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 
 namespace RunCommandDocker
 {
@@ -41,7 +42,7 @@ namespace RunCommandDocker
 
     }
 
-    public abstract class CommandCollectionBase<T> : CommandBase
+    public abstract class CommandCollectionBase<T> : CommandBase where T : CommandBase 
     {
 
         private ObservableCollection<T> items;
@@ -59,7 +60,10 @@ namespace RunCommandDocker
             }
         }
 
-
+        public virtual void Order()
+        {
+            Items.OrderBy(r => r.Name);
+        }
 
         public int Count
         {
@@ -153,6 +157,7 @@ namespace RunCommandDocker
                                     objects[i] = null;
                                     return;
                                 }
+
                                 objects[i] = (Items[i].Value as Func<Command, object>).Invoke(this);
                             }
                         }
@@ -224,6 +229,18 @@ namespace RunCommandDocker
 
             }
         }
+        private bool canStop = false;
+        public  bool CanStop
+        {
+            get { return canStop; }
+            set
+            {
+                canStop = value;
+
+                OnPropertyChanged("CanStop");
+
+            }
+        }
         public bool CheckSelected()
         {
             if (IsSelected)
@@ -242,9 +259,18 @@ namespace RunCommandDocker
             for (int i = 0; i < range.Length; i++)
             {
                 Argument arguments = new Argument();
-
-                arguments.Name = (range[i] as Tuple<string, Type>).Item1;
-                arguments.ArgumentType = (range[i] as Tuple<string, Type>).Item2;
+                if (range[i] is Argument)
+                {
+                    arguments.Name = (range[i] as Argument).Name;
+                    arguments.ArgumentType = (range[i] as Argument).ArgumentType;
+                    arguments.Value = (range[i] as Argument).Value;
+                }
+                else
+                {
+                   
+                    arguments.Name = (range[i] as Tuple<string, Type>).Item1;
+                    arguments.ArgumentType = (range[i] as Tuple<string, Type>).Item2;
+                }
                 arguments.Parent = this;
                 Items.Add(arguments);
 

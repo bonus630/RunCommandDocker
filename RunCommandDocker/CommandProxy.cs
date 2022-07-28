@@ -155,8 +155,12 @@ namespace RunCommandDocker
             for (int i = 0; i < parameters.Length; i++)
 
             {
-                Tuple<string,Type> argument = new Tuple<string,Type>(parameters[i].Name, parameters[i].ParameterType);
-                arguments[i] = argument;
+                Argument arg = new Argument();
+                arg.Name = parameters[i].Name;
+                arg.ArgumentType = parameters[i].ParameterType;
+                arg.Value = parameters[i].DefaultValue;
+                //Tuple<string,Type> argument = new Tuple<string,Type>(parameters[i].Name, parameters[i].ParameterType);
+                arguments[i] = arg;
             }
             return arguments;
             //Pq os items com os argumentos chegam nulos na ui, aqui são setados corretamente

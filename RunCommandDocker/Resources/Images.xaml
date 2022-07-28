@@ -44,4 +44,14 @@
         <Setter Property="Source" Value="{Binding Source={StaticResource Copy},Converter={StaticResource ResourceToMediaImageConverter}}"/>
     </Style>
 
+    <System:String x:Key="Play">Play</System:String>
+    <Style x:Key="PlayImage" TargetType="Image">
+        <Setter Property="Source" Value="{Binding Source={StaticResource Play},Converter={StaticResource ResourceToMediaImageConverter}}"/>
+    </Style>
+
+    <System:String x:Key="Stop">Stop</System:String>
+    <Style x:Key="StopImage" TargetType="Image">
+        <Setter Property="Source" Value="{Binding Source={StaticResource Stop},Converter={StaticResource ResourceToMediaImageConverter}}"/>
+    </Style>
+
 </ResourceDictionary>

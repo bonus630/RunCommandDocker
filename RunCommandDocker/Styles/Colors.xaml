@@ -30,6 +30,12 @@
     <SolidColorBrush x:Key="ControlUI.Button.Static.Background" Color="#ffeaeaea" />
     <SolidColorBrush x:Key="ControlUI.Button.Pressed.Background" Color="#FFC4E5F6"/>
     <SolidColorBrush x:Key="ControlUI.Button.Pressed.Border" Color="#FF2C628B"/>
+    <SolidColorBrush x:Key="Scroll.Track.Static.Background" Color="#ffffff"/>
+    <SolidColorBrush x:Key="Scroll.Thumb.Static.Background" Color="#cdcdcd"/>
+    <SolidColorBrush x:Key="Scroll.Thumb.MouseOver.Background" Color="#a6a6a6"/>
+    <SolidColorBrush x:Key="Scroll.Thumb.Dragging.Background" Color="#606060"/>
+    <SolidColorBrush x:Key="Scroll.RepeatButton.Static.Background" Color="#ffffff"/>
+    <SolidColorBrush x:Key="Scroll.RepeatButton.MouseOver.Background" Color="#dadada"/>
 
     <SolidColorBrush x:Key="LightestGrey.TabControl.Static.Border" Color="#ff00adfe" />
     <SolidColorBrush x:Key="LightestGrey.TabItem.Static.Border" Color="#ffeaeaea"/>
@@ -59,6 +65,12 @@
     <SolidColorBrush x:Key="LightestGrey.ControlUI.Button.Static.Background" Color="#ffeaeaea" />
     <SolidColorBrush x:Key="LightestGrey.ControlUI.Button.Pressed.Background" Color="#FFC4E5F6"/>
     <SolidColorBrush x:Key="LightestGrey.ControlUI.Button.Pressed.Border" Color="#FF2C628B"/>
+    <SolidColorBrush x:Key="LightestGrey.Scroll.Track.Static.Background" Color="#ffffff"/>
+    <SolidColorBrush x:Key="LightestGrey.Scroll.Thumb.Static.Background" Color="#cdcdcd"/>
+    <SolidColorBrush x:Key="LightestGrey.Scroll.Thumb.MouseOver.Background" Color="#a6a6a6"/>
+    <SolidColorBrush x:Key="LightestGrey.Scroll.Thumb.Dragging.Background" Color="#606060"/>
+    <SolidColorBrush x:Key="LightestGrey.Scroll.RepeatButton.Static.Background" Color="#ffffff"/>
+    <SolidColorBrush x:Key="LightestGrey.Scroll.RepeatButton.MouseOver.Background" Color="#dadada"/>
 
     <SolidColorBrush x:Key="MediumGrey.TabControl.Static.Border" Color="#ff00adfe" />
     <SolidColorBrush x:Key="MediumGrey.TabItem.Static.Border" Color="#ffe2e2e2"/>
@@ -88,6 +100,12 @@
     <SolidColorBrush x:Key="MediumGrey.ControlUI.Button.Static.Background" Color="#ffe2e2e2" />
     <SolidColorBrush x:Key="MediumGrey.ControlUI.Button.Pressed.Background" Color="#FFC4E5F6"/>
     <SolidColorBrush x:Key="MediumGrey.ControlUI.Button.Pressed.Border" Color="#FF2C628B"/>
+    <SolidColorBrush x:Key="MediumGrey.Scroll.Track.Static.Background" Color="#ffffff"/>
+    <SolidColorBrush x:Key="MediumGrey.Scroll.Thumb.Static.Background" Color="#d0d0d0"/>
+    <SolidColorBrush x:Key="MediumGrey.Scroll.Thumb.MouseOver.Background" Color="#a6a6a6"/>
+    <SolidColorBrush x:Key="MediumGrey.Scroll.Thumb.Dragging.Background" Color="#606060"/>
+    <SolidColorBrush x:Key="MediumGrey.Scroll.RepeatButton.Static.Background" Color="#ffffff"/>
+    <SolidColorBrush x:Key="MediumGrey.Scroll.RepeatButton.MouseOver.Background" Color="#dadada"/>
 
     <SolidColorBrush x:Key="DarkGrey.TabControl.Static.Border" Color="#ff3399ff" />
     <SolidColorBrush x:Key="DarkGrey.TabItem.Static.Border" Color="#ff2d2d2d"/>
@@ -117,6 +135,12 @@
     <SolidColorBrush x:Key="DarkGrey.ControlUI.Button.Static.Background" Color="#ff323232" />
     <SolidColorBrush x:Key="DarkGrey.ControlUI.Button.Pressed.Background" Color="#FFC4E5F6"/>
     <SolidColorBrush x:Key="DarkGrey.ControlUI.Button.Pressed.Border" Color="#FF2C628B"/>
+    <SolidColorBrush x:Key="DarkGrey.Scroll.Track.Static.Background" Color="#ffffff"/>
+    <SolidColorBrush x:Key="DarkGrey.Scroll.Thumb.Static.Background" Color="#d0d0d0"/>
+    <SolidColorBrush x:Key="DarkGrey.Scroll.Thumb.MouseOver.Background" Color="#a6a6a6"/>
+    <SolidColorBrush x:Key="DarkGrey.Scroll.Thumb.Dragging.Background" Color="#606060"/>
+    <SolidColorBrush x:Key="DarkGrey.Scroll.RepeatButton.Static.Background" Color="#ffffff"/>
+    <SolidColorBrush x:Key="DarkGrey.Scroll.RepeatButton.MouseOver.Background" Color="#dadada"/>
 
     <SolidColorBrush x:Key="Black.TabControl.Static.Border" Color="#ff3399ff" />
     <SolidColorBrush x:Key="Black.TabItem.Static.Border" Color="#ff323232"/>
@@ -140,6 +164,12 @@
     <SolidColorBrush x:Key="Black.Container.Static.Background" Color="#ff232323" />
     <SolidColorBrush x:Key="Black.Default.Static.Inverted.Foreground" Color="#ff0f0f0f" />
     <SolidColorBrush x:Key="Black.ComboBox.Border.Popup.Item.MouseOver" Color="#ff0078d7"/>
+    <SolidColorBrush x:Key="Black.Scroll.Thumb.Static.Background" Color="#4d4d4d"/>
+    <SolidColorBrush x:Key="Black.Scroll.Thumb.MpuseOver.Background" Color="#999999"/>
+    <SolidColorBrush x:Key="Black.Scroll.Track.Static.Background" Color="#2e2e2e"/>
+    <SolidColorBrush x:Key="Black.Scroll.Thumb.Dragging.Background" Color="#ffffff"/>
+    <SolidColorBrush x:Key="Black.Scroll.RepeatButton.Static.Background" Color="#ffffff"/>
+    <SolidColorBrush x:Key="Black.Scroll.RepeatButton.MouseOver.Background" Color="#dadada"/>
 
     <!--#endregion colors styles resource-->
 
