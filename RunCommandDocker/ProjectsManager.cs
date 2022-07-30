@@ -23,6 +23,7 @@ namespace RunCommandDocker
         }
         public BindingCommand<Command> ExecuteCommand { get; set; }
         public BindingCommand<Command> StopCommand { get; set; }
+        public BindingCommand<Command> TogglePinCommand { get; set; }
         public BindingCommand<Command> SetCommandToValueCommand { get; set; }
         public BindingCommand<Reflected> CopyValueCommand { get; set; }
         public BindingCommand<object> CopyReturnsValueCommand { get; set; }
@@ -63,8 +64,65 @@ namespace RunCommandDocker
             get { return projects; }
             set { projects = value; OnPropertyChanged("Projects"); }
         }
+
+        private ObservableCollection<Command> pinnedCommands;
+
+        public ObservableCollection<Command> PinnedCommands
+        {
+            get { return pinnedCommands; }
+            set { pinnedCommands = value; OnPropertyChanged("PinnedCommands"); }
+        }
+
+
         private Command selectedCommand;
-        public Command SelectedCommand{ get { return selectedCommand; } set { selectedCommand = value; OnPropertyChanged("SelectedCommand"); } }
+        public Command SelectedCommand { get { return selectedCommand; } set { selectedCommand = value; OnPropertyChanged("SelectedCommand"); } }
+
+        public void LoadPinnedCommands()
+        {
+            try
+            {
+
+                //encontrar o comando pelo caminho vai garantir melhor desempenho
+                var commandNames = Properties.Settings.Default.PinnedCommands;
+                PinnedCommands.Clear();
+              
+                for (int i = 0; i < commandNames.Count; i++)
+                {
+                    var command = FindCommandByXPath(commandNames[i]);
+
+                   // Command c1 = pinnedCommands.FirstOrDefault(m => m.ToString().Equals(commandNames[i]));
+                    if (command != null)
+                    {
+                        PinnedCommands.Add(command);
+                    }
+                }
+                Properties.Settings.Default.PinnedCommands.Clear();
+                foreach (var item in PinnedCommands)
+                {
+                    Properties.Settings.Default.PinnedCommands.Add(item.ToString());
+                }
+                Properties.Settings.Default.Save();
+                OnPropertyChanged("PinnedCommands");
+            }
+            catch { }
+        }
+        private Command FindCommandByXPath(string commandXPath)
+        {
+            string[] pierces = commandXPath.Split('/');
+            if (pierces.Length > 0)
+            {
+                Project project = Projects.FirstOrDefault(n => n.Name.Equals(pierces[0])) as Project;
+
+                if (project != null)
+                {
+                    Module module = project.Items.FirstOrDefault(v => v.Name.Equals(pierces[1]));
+                    if (module != null)
+                        return module.Items.FirstOrDefault(q => q.ToString().Equals(commandXPath));
+                }
+            }
+            return null;
+        }
+
         string dir = "";
         public string Dir { get { return dir; } set { dir = value; OnPropertyChanged("Dir"); } }
 
@@ -82,10 +140,12 @@ namespace RunCommandDocker
         public void Start(ProxyManager proxyManager)
         {
             projects = new ObservableCollection<Project>();
+            pinnedCommands = new ObservableCollection<Command>();
             Dir = Properties.Settings.Default.FolderPath;
             this.proxyManager = proxyManager;
             ExecuteCommand = new BindingCommand<Command>(RunCommandAsync);
             StopCommand = new BindingCommand<Command>(StopCommandAsync);
+            TogglePinCommand = new BindingCommand<Command>(PinCommand, CanPin);
             CopyValueCommand = new BindingCommand<Reflected>(CopyValue);
             CopyReturnsValueCommand = new BindingCommand<object>(CopyReturnsValue);
             SetCommandToValueCommand = new BindingCommand<Command>(SetCommandReturnArgumentValue, CanRunSetCommandReturnArgVal);
@@ -100,7 +160,7 @@ namespace RunCommandDocker
         {
             if (command.HasParam)
                 command.PrepareArguments();
-           proxyManager.RunCommand(command);
+            proxyManager.RunCommand(command);
         }
         /// <summary>
         /// Use this form run in button
@@ -112,7 +172,7 @@ namespace RunCommandDocker
                 command.PrepareArguments();
             proxyManager.RunCommandAsync(command);
         }
-      
+
         private void SetCommandReturnArgumentValue(Command command)
         {
             //Need checks for recursive 
@@ -125,11 +185,36 @@ namespace RunCommandDocker
                         return command.Returns;
                     });
         }
-        public void StopCommandAsync(Command command)
+        private void StopCommandAsync(Command command)
         {
             proxyManager.StopCommandAsync(command);
         }
-
+        private void PinCommand(Command command)
+        {
+            Command c = pinnedCommands.FirstOrDefault(r => r.ToString().Equals(command.ToString()));
+            if (c == null)
+            {
+                PinnedCommands.Add(command);
+                Properties.Settings.Default.PinnedCommands.Add(command.ToString());
+            }
+            else
+            {
+                PinnedCommands.Remove(c);
+                Properties.Settings.Default.PinnedCommands.Remove(c.ToString());
+            }
+            OnPropertyChanged("PinnedCommands");
+            Properties.Settings.Default.Save();
+        }
+        private bool CanPin(Command command)
+        {
+            bool canPin = false;
+            if (command != null)
+            {
+                if (command.ReturnsType.Equals(typeof(void)) && !command.HasParam)
+                    canPin = true;
+            }
+            return canPin;
+        }
         private bool CanRunSetCommandReturnArgVal(Command command)
         {
             if (command.ReturnsType == null || command.ReturnsType == typeof(void))
@@ -161,7 +246,7 @@ namespace RunCommandDocker
         }
         private void CopyReturnsValue(object o)
         {
-            if(o!=null)
+            if (o != null)
                 Clipboard.SetText(o.ToString());
         }
         public void SelectFolder()
@@ -255,7 +340,7 @@ namespace RunCommandDocker
                         if (lastCommand != null && lastCommand[2].Equals(command.Name))
                             command.IsSelected = true;
                         //if(!m.Contains(command))
-                            m.Add(command);
+                        m.Add(command);
                     }
                 }
             }
@@ -267,6 +352,7 @@ namespace RunCommandDocker
             {
                 proxyManager.UnloadDomain();
             }
+            
 
         }
         private void CommandSelected(Command command)
@@ -276,7 +362,7 @@ namespace RunCommandDocker
 
             //if (command.IsSelected)
             //    this.SelectedCommand = command;
-         
+
         }
         private void ReadFiles()
         {
@@ -312,12 +398,14 @@ namespace RunCommandDocker
                 project = new Project()
                 {
                     Name = name,
-                    Path = path
+                    Path = path,
+                    Parent = this
                 };
                 this.dispatcher.Invoke(new Action(() =>
                 {
                     Projects.Add(project);
                     SetModulesCommands(project);
+                    LoadPinnedCommands();
                 }));
             }
         }
@@ -329,6 +417,7 @@ namespace RunCommandDocker
                 this.dispatcher.Invoke(new Action(() =>
                 {
                     Projects.Remove(project);
+                    LoadPinnedCommands();
                 }));
             }
         }

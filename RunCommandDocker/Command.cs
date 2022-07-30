@@ -42,7 +42,7 @@ namespace RunCommandDocker
 
     }
 
-    public abstract class CommandCollectionBase<T> : CommandBase where T : CommandBase 
+    public abstract class CommandCollectionBase<T> : CommandBase where T : CommandBase
     {
 
         private ObservableCollection<T> items;
@@ -77,6 +77,7 @@ namespace RunCommandDocker
 
         }
 
+   
 
         public virtual void Add(T item)
         {
@@ -107,13 +108,16 @@ namespace RunCommandDocker
 
     public class Project : CommandCollectionBase<Module>
     {
+        public object Parent { get; set; }
         public string Path { get; set; }
+        public override string ToString() { return Name; }
     }
 
     public class Module : CommandCollectionBase<Command>
     {
         public Project Parent { get; set; }
         public string FullName { get; set; }
+        public override string ToString() { return string.Format("{0}/{1}", Parent.Name, Name); }
     }
 
     public class Command : CommandCollectionBase<Argument>
@@ -152,7 +156,7 @@ namespace RunCommandDocker
                             }
                             else
                             {
-                                if(recursionProtection>100)
+                                if (recursionProtection > 100)
                                 {
                                     objects[i] = null;
                                     return;
@@ -195,7 +199,7 @@ namespace RunCommandDocker
                 OnPropertyChanged("ReturnsType");
             }
         }
-        
+
         private Type returnsType;
         public Type ReturnsType { get { return returnsType; } set { returnsType = value; OnPropertyChanged("ReturnsType"); } }
         private Reflected reflected;
@@ -230,7 +234,7 @@ namespace RunCommandDocker
             }
         }
         private bool canStop = false;
-        public  bool CanStop
+        public bool CanStop
         {
             get { return canStop; }
             set
@@ -267,7 +271,7 @@ namespace RunCommandDocker
                 }
                 else
                 {
-                   
+
                     arguments.Name = (range[i] as Tuple<string, Type>).Item1;
                     arguments.ArgumentType = (range[i] as Tuple<string, Type>).Item2;
                 }

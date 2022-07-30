@@ -54,12 +54,21 @@ namespace RunCommandDocker.Styles
          "ControlUI.Button.Static.Background" ,
          "ControlUI.Button.Pressed.Background" ,
          "ControlUI.Button.Pressed.Border",
-         "Scroll.Track.Static.Background",
-         "Scroll.Thumb.Static.Background",
-         "Scroll.Thumb.MouseOver.Background",
-         "Scroll.Thumb.Dragging.Background" ,
-         "Scroll.RepeatButton.Static.Background" ,
-         "Scroll.RepeatButton.MouseOver.Background"
+        "ScrollBar.Static.Background" ,
+         "ScrollBar.Static.Border",
+         "ScrollBar.Static.Glyph",
+         "ScrollBar.Static.Thumb" ,
+         "ScrollBar.MouseOver.Background",
+         "ScrollBar.MouseOver.Border" ,
+         "ScrollBar.MouseOver.Glyph" ,
+         "ScrollBar.MouseOver.Thumb" ,
+         "ScrollBar.Pressed.Background",
+         "ScrollBar.Pressed.Border" ,
+         "ScrollBar.Pressed.Thumb" ,
+         "ScrollBar.Pressed.Glyph" ,
+         "ScrollBar.Disabled.Background",
+         "ScrollBar.Disabled.Border",
+         "ScrollBar.Disabled.Glyph"
         };
 
         private void LoadStyle(string name)

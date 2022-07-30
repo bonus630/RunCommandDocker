@@ -41,10 +41,12 @@ namespace RunCommandDocker
 
         private void DockerUI_Loaded(object sender, RoutedEventArgs e)
         {
-             projectsManager = new ProjectsManager(this.Dispatcher);
+            if (Properties.Settings.Default.PinnedCommands == null)
+                Properties.Settings.Default.PinnedCommands = new System.Collections.Specialized.StringCollection();
+        
+            projectsManager = new ProjectsManager(this.Dispatcher);
             projectsManager.shapeRangeManager = shapeRangeManager;
             projectsManager.Start(proxyManager);
-          
             this.DataContext = projectsManager;
 
         }
@@ -68,6 +70,7 @@ namespace RunCommandDocker
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             stylesController.LoadThemeFromPreference();
+            
         }
 
         private void btn_selectFolder_Click(object sender, RoutedEventArgs e)

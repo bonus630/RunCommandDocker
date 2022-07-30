@@ -231,6 +231,7 @@
       <DependentUpon>DockerUI.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="IconGen.cs" />
     <Compile Include="MyPopup\MyPopup.cs" />
     <Compile Include="MyPopup\PopupContent.xaml.cs">
       <DependentUpon>PopupContent.xaml</DependentUpon>
@@ -313,6 +314,8 @@
     <None Include="Resources\Copy.png" />
     <None Include="Resources\Play.png" />
     <None Include="Resources\Stop.png" />
+    <None Include="Resources\Pin.png" />
+    <None Include="Resources\Unpin.png" />
     <Content Include="UserUI.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

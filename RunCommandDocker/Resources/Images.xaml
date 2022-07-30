@@ -54,4 +54,15 @@
         <Setter Property="Source" Value="{Binding Source={StaticResource Stop},Converter={StaticResource ResourceToMediaImageConverter}}"/>
     </Style>
 
+
+    <System:String x:Key="Pin">Pin</System:String>
+    <Style x:Key="PinImage" TargetType="Image">
+        <Setter Property="Source" Value="{Binding Source={StaticResource Pin},Converter={StaticResource ResourceToMediaImageConverter}}"/>
+    </Style>
+
+    <System:String x:Key="Unpin">Unpin</System:String>
+    <Style x:Key="UnpinImage" TargetType="Image">
+        <Setter Property="Source" Value="{Binding Source={StaticResource Unpin},Converter={StaticResource ResourceToMediaImageConverter}}"/>
+    </Style>
+
 </ResourceDictionary>

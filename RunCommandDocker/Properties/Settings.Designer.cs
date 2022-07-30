@@ -34,5 +34,16 @@ namespace RunCommandDocker.Properties {
                 this["FolderPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection PinnedCommands {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["PinnedCommands"]));
+            }
+            set {
+                this["PinnedCommands"] = value;
+            }
+        }
     }
 }
