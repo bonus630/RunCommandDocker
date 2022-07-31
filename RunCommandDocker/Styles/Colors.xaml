@@ -45,6 +45,7 @@
     <SolidColorBrush x:Key="ScrollBar.Disabled.Background" Color="#F0F0F0"/>
     <SolidColorBrush x:Key="ScrollBar.Disabled.Border" Color="#F0F0F0"/>
     <SolidColorBrush x:Key="ScrollBar.Disabled.Glyph" Color="#BFBFBF"/>
+    <SolidColorBrush x:Key="Footer.Static.Background" Color="#FFD7A3"/>
 
     <SolidColorBrush x:Key="LightestGrey.TabControl.Static.Border" Color="#ff00adfe" />
     <SolidColorBrush x:Key="LightestGrey.TabItem.Static.Border" Color="#ffeaeaea"/>
@@ -89,6 +90,7 @@
     <SolidColorBrush x:Key="LightestGrey.ScrollBar.Disabled.Background" Color="#F0F0F0"/>
     <SolidColorBrush x:Key="LightestGrey.ScrollBar.Disabled.Border" Color="#F0F0F0"/>
     <SolidColorBrush x:Key="LightestGrey.ScrollBar.Disabled.Glyph" Color="#BFBFBF"/>
+    <SolidColorBrush x:Key="LightestGrey.Footer.Static.Background" Color="#FFD7A3"/>
 
     <SolidColorBrush x:Key="MediumGrey.TabControl.Static.Border" Color="#ff00adfe" />
     <SolidColorBrush x:Key="MediumGrey.TabItem.Static.Border" Color="#ffe2e2e2"/>
@@ -133,6 +135,7 @@
     <SolidColorBrush x:Key="MediumGrey.ScrollBar.Disabled.Background" Color="#F0F0F0"/>
     <SolidColorBrush x:Key="MediumGrey.ScrollBar.Disabled.Border" Color="#F0F0F0"/>
     <SolidColorBrush x:Key="MediumGrey.ScrollBar.Disabled.Glyph" Color="#BFBFBF"/>
+    <SolidColorBrush x:Key="MediumGrey.Footer.Static.Background" Color="#F2A138"/>
 
     <SolidColorBrush x:Key="DarkGrey.TabControl.Static.Border" Color="#ff3399ff" />
     <SolidColorBrush x:Key="DarkGrey.TabItem.Static.Border" Color="#ff2d2d2d"/>
@@ -177,6 +180,8 @@
     <SolidColorBrush x:Key="DarkGrey.ScrollBar.Disabled.Background" Color="#F0F0F0"/>
     <SolidColorBrush x:Key="DarkGrey.ScrollBar.Disabled.Border" Color="#F0F0F0"/>
     <SolidColorBrush x:Key="DarkGrey.ScrollBar.Disabled.Glyph" Color="#BFBFBF"/>
+    <SolidColorBrush x:Key="DarkGrey.Footer.Static.Background" Color="#A62D74"/>
+    
 
     <SolidColorBrush x:Key="Black.TabControl.Static.Border" Color="#ff3399ff" />
     <SolidColorBrush x:Key="Black.TabItem.Static.Border" Color="#ff323232"/>
@@ -215,7 +220,8 @@
     <SolidColorBrush x:Key="Black.ScrollBar.Disabled.Background" Color="#F0F0F0"/>
     <SolidColorBrush x:Key="Black.ScrollBar.Disabled.Border" Color="#F0F0F0"/>
     <SolidColorBrush x:Key="Black.ScrollBar.Disabled.Glyph" Color="#BFBFBF"/>
-
+    <SolidColorBrush x:Key="Black.Footer.Static.Background" Color="#861b2d"/>
+    
     <!--#endregion colors styles resource-->
 
     <!--default controls colors-->

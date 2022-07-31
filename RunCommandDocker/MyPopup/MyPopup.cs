@@ -70,6 +70,7 @@ namespace RunCommandDocker.MyPopup
             //5º Use the implemented interface and generic argument to cast reflected collection
             //6º Go through all items and reflect them
             //Can we put these items in the item property?
+            //Is required a checking for enum types, enum types can throw exceptions if yours values cames wrong
             object obj = parent.Value;
             Type mainType;
             
@@ -104,7 +105,6 @@ namespace RunCommandDocker.MyPopup
                         //Here can use recursivity to fill all treeview nodes
                         item.Childrens = new ObservableCollection<Reflected>();
                         item.Childrens.Add(null);
-                        //GetChildrens(v, item);
                     }
 
                     Childrens.Add(item);
@@ -133,7 +133,6 @@ namespace RunCommandDocker.MyPopup
                         //Here can use recursivity to fill all treeview nodes
                         item.Childrens = new ObservableCollection<Reflected>();
                         item.Childrens.Add(null);
-                        //GetChildrens(v, item);
                     }
 
                     Childrens.Add(item);

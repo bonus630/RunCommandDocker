@@ -18,23 +18,13 @@
             </Setter.Value>
         </Setter>
     </Style>-->
-    <Style TargetType="TreeViewItem">
 
-        <Setter Property="TreeViewItem.IsExpanded" Value="{Binding IsExpanded}"/>
-        <Setter Property="TreeViewItem.IsSelected" Value="{Binding IsSelected}"/>
-        <Style.Triggers>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background" Value="{DynamicResource Button.Static.Background}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource Button.Static.Border}" />
-                <Setter Property="BorderThickness" Value="1" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
     <Style x:Key="PopupBorder" TargetType="Border">
         <Setter Property="Background" Value="{DynamicResource Default.Static.Background}"/>
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="BorderBrush" Value="{DynamicResource Button.MouseOver.Border}"/>
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Footer.Static.Background}"/>
     </Style>
+
 
 
     <SolidColorBrush x:Key="ListBorder" Color="#828790"/>

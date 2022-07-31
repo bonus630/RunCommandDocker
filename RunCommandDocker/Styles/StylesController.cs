@@ -68,7 +68,8 @@ namespace RunCommandDocker.Styles
          "ScrollBar.Pressed.Glyph" ,
          "ScrollBar.Disabled.Background",
          "ScrollBar.Disabled.Border",
-         "ScrollBar.Disabled.Glyph"
+         "ScrollBar.Disabled.Glyph",
+        "Footer.Static.Background"
         };
 
         private void LoadStyle(string name)

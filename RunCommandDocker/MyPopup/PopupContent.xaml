@@ -29,8 +29,10 @@
                 <RowDefinition Height="24"/>
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <Label HorizontalContentAlignment="Center" VerticalAlignment="Top" Content="{Binding SelectedCommand.ReflectedProp.Name,FallbackValue=VAlor}"/>
-            <TreeView  Grid.Row="1" ItemsSource="{Binding SelectedCommand.ReflectedProp.Childrens}"
+            <Label HorizontalContentAlignment="Center" VerticalAlignment="Top" Foreground="{DynamicResource Default.Static.Foreground}"  
+                   Background="{DynamicResource Footer.Static.Background}"
+                   Content="{Binding SelectedCommand.ReflectedProp.Name,FallbackValue=VAlor}"/>
+            <TreeView BorderThickness="0"  Grid.Row="1" ItemsSource="{Binding SelectedCommand.ReflectedProp.Childrens}"
                       TreeViewItem.Expanded="TreeView_Expanded">
                 
                 <TreeView.ItemContainerStyle>
