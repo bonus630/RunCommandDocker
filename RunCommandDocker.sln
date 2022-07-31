@@ -1,28 +1,42 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.2.32616.157
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32630.194
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunCommandDocker", "RunCommandDocker\RunCommandDocker.csproj", "{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		2017 Debug|Any CPU = 2017 Debug|Any CPU
+		2017 Release|Any CPU = 2017 Release|Any CPU
 		2018 Debug|Any CPU = 2018 Debug|Any CPU
 		2018 Release|Any CPU = 2018 Release|Any CPU
+		2019 Debug|Any CPU = 2019 Debug|Any CPU
+		2019 Release|Any CPU = 2019 Release|Any CPU
 		2020 Debug|Any CPU = 2020 Debug|Any CPU
 		2020 Release|Any CPU = 2020 Release|Any CPU
 		2021 Debug|Any CPU = 2021 Debug|Any CPU
 		2021 Release|Any CPU = 2021 Release|Any CPU
 		2022 Debug|Any CPU = 2022 Debug|Any CPU
 		2022 Release|Any CPU = 2022 Release|Any CPU
+		X7 Debug|Any CPU = X7 Debug|Any CPU
+		X7 Release|Any CPU = X7 Release|Any CPU
 		X8 Debug|Any CPU = X8 Debug|Any CPU
 		X8 Release|Any CPU = X8 Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.2017 Debug|Any CPU.ActiveCfg = 2017 Debug|Any CPU
+		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.2017 Debug|Any CPU.Build.0 = 2017 Debug|Any CPU
+		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.2017 Release|Any CPU.ActiveCfg = 2017 Release|Any CPU
+		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.2017 Release|Any CPU.Build.0 = 2017 Release|Any CPU
 		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.2018 Debug|Any CPU.ActiveCfg = 2018 Debug|Any CPU
 		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.2018 Debug|Any CPU.Build.0 = 2018 Debug|Any CPU
 		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.2018 Release|Any CPU.ActiveCfg = 2018 Release|Any CPU
 		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.2018 Release|Any CPU.Build.0 = 2018 Release|Any CPU
+		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.2019 Debug|Any CPU.ActiveCfg = 2019 Debug|Any CPU
+		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.2019 Debug|Any CPU.Build.0 = 2019 Debug|Any CPU
+		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.2019 Release|Any CPU.ActiveCfg = 2019 Release|Any CPU
+		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.2019 Release|Any CPU.Build.0 = 2019 Release|Any CPU
 		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.2020 Debug|Any CPU.ActiveCfg = 2020 Debug|Any CPU
 		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.2020 Debug|Any CPU.Build.0 = 2020 Debug|Any CPU
 		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.2020 Release|Any CPU.ActiveCfg = 2020 Release|Any CPU
@@ -35,6 +49,10 @@ Global
 		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.2022 Debug|Any CPU.Build.0 = 2022 Debug|Any CPU
 		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.2022 Release|Any CPU.ActiveCfg = 2022 Release|Any CPU
 		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.2022 Release|Any CPU.Build.0 = 2022 Release|Any CPU
+		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.X7 Debug|Any CPU.ActiveCfg = X7 Debug|Any CPU
+		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.X7 Debug|Any CPU.Build.0 = X7 Debug|Any CPU
+		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.X7 Release|Any CPU.ActiveCfg = X7 Release|Any CPU
+		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.X7 Release|Any CPU.Build.0 = X7 Release|Any CPU
 		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.X8 Debug|Any CPU.ActiveCfg = X8 Debug|Any CPU
 		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.X8 Debug|Any CPU.Build.0 = X8 Debug|Any CPU
 		{1BA7628F-50A0-47B4-98B1-BC0BEF70E0B8}.X8 Release|Any CPU.ActiveCfg = X8 Release|Any CPU

@@ -210,7 +210,7 @@ namespace RunCommandDocker
             bool canPin = false;
             if (command != null)
             {
-                if (command.ReturnsType.Equals(typeof(void)) && !command.HasParam)
+                if (!command.HasParam)
                     canPin = true;
             }
             return canPin;
@@ -264,7 +264,7 @@ namespace RunCommandDocker
                 try
                 {
                     startUpThread.Abort();
-                    startUpThread = default;
+                    startUpThread = null;
                 }
                 catch { }
                 Dir = fbd.SelectedPath;

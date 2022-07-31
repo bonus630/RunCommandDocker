@@ -96,7 +96,7 @@ namespace RunCommandDocker.MyPopup
                     try
                     {
                       
-                        isValueType = itemType.IsValueType;
+                        isValueType = itemType.IsValueType || itemType.Equals(typeof(string));
                     }
                     catch { }
                     Reflected item = new Reflected() { Name = itemType.Name, Value = generic, IsValueType = isValueType, Parent = parent };
@@ -124,7 +124,7 @@ namespace RunCommandDocker.MyPopup
                     try
                     {
                         v = property.GetValue(obj, null);
-                        isValueType = v.GetType().IsValueType;
+                        isValueType = v.GetType().IsValueType || v.GetType().Equals(typeof(string));
                     }
                     catch { }
                     Reflected item = new Reflected() { Name = property.Name, Value = v, IsValueType = isValueType, Parent = parent };

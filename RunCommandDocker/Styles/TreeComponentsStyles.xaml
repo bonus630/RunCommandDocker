@@ -53,6 +53,7 @@
         </Setter>
     </Style>
     <Style x:Key="TreeViewItemCustomStyle" TargetType="TreeViewItem">
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue"/>
         <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
         <Setter Property="Template">
             <Setter.Value>

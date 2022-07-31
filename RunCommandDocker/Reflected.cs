@@ -15,7 +15,8 @@ namespace RunCommandDocker
 
         public void OnPropertyChanged([CallerMemberName]string propertyName = "")
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if(PropertyChanged!=null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private string name;

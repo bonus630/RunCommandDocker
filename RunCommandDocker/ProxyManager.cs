@@ -67,7 +67,7 @@ namespace RunCommandDocker
         {
             LastCommandPath = command.ToString();
 
-            int nextSlot = workers.FindIndex(r => r == default);
+            int nextSlot = workers.FindIndex(r => r == null);
 
             AppDomain runDomainAsync = AppDomain.CreateDomain(String.Format("RunnableDomainAsync{0}", Guid.NewGuid()), null, loadDomainSetup);
             BackgroundWorkerIded worker = new BackgroundWorkerIded();
@@ -113,8 +113,8 @@ namespace RunCommandDocker
             command.CanStop = false;
             worker = null;
             UnloadDomain(runDomainAsync);
-            this.workers[nextSlot] = default;
-            this.loadDomainList[nextSlot] = default;
+            this.workers[nextSlot] = null;
+            this.loadDomainList[nextSlot] = null;
             
         }
         public void StopCommandAsync(Command command)
@@ -145,7 +145,7 @@ namespace RunCommandDocker
             try
             {
                 AppDomain.Unload(domain);
-                domain = default;
+                domain = null;
             }
             catch { }
         }
