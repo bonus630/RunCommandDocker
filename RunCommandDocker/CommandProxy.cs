@@ -144,7 +144,25 @@ namespace RunCommandDocker
         {
             Type type = AssemblyTypes.FirstOrDefault(
                 r => r.FullName.Equals(command.Parent.FullName));
-            MethodInfo mi = type.GetMethods().FirstOrDefault(r=>r.Name.Equals(command.Name));
+            MethodInfo mi = null;
+            List<MethodInfo> mis = type.GetMethods().ToList();
+            int count = 0;
+            while (count < mis.Count)
+            {
+                if (!mis[count].Name.Equals(command.Name)) 
+                {
+                    mis.RemoveAt(count);
+                    
+                }
+                else
+                    count++;
+            }
+            for (int i = 0; i < mis.Count; i++)
+            {
+                if(i == command.ID)
+                    mi = mis[i];
+            }
+                //type.GetMethods().FirstOrDefault(r=>r.Name.Equals(command.Name));
             //.GetMembers().FirstOrDefault(u => u.Name.Equals(command.Name));
             command.ReturnsType = mi.ReturnType;
             ParameterInfo[] parameters = mi.GetParameters();

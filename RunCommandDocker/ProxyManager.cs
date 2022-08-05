@@ -63,9 +63,10 @@ namespace RunCommandDocker
                 UnloadDomain();
             }
         }
-        public void RunCommandAsync(Command command)
+        public void RunCommandAsync(Command command,bool noPinned = true)
         {
-            LastCommandPath = command.ToString();
+            if(noPinned)
+                LastCommandPath = command.ToString();
 
             int nextSlot = workers.FindIndex(r => r == null);
 

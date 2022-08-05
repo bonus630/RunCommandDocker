@@ -22,6 +22,7 @@ namespace RunCommandDocker
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
         public BindingCommand<Command> ExecuteCommand { get; set; }
+        public BindingCommand<Command> ExecutePinCommand { get; set; }
         public BindingCommand<Command> StopCommand { get; set; }
         public BindingCommand<Command> TogglePinCommand { get; set; }
         public BindingCommand<Command> SetCommandToValueCommand { get; set; }
@@ -75,7 +76,9 @@ namespace RunCommandDocker
 
 
         private Command selectedCommand;
-        public Command SelectedCommand { get { return selectedCommand; } set { selectedCommand = value; OnPropertyChanged("SelectedCommand"); } }
+        public Command SelectedCommand { get { return selectedCommand; } set { 
+                selectedCommand = value; 
+                OnPropertyChanged("SelectedCommand"); } }
 
         public void LoadPinnedCommands()
         {
@@ -144,6 +147,7 @@ namespace RunCommandDocker
             Dir = Properties.Settings.Default.FolderPath;
             this.proxyManager = proxyManager;
             ExecuteCommand = new BindingCommand<Command>(RunCommandAsync);
+            ExecuteCommand = new BindingCommand<Command>(RunPinCommandAsync);
             StopCommand = new BindingCommand<Command>(StopCommandAsync);
             TogglePinCommand = new BindingCommand<Command>(PinCommand, CanPin);
             CopyValueCommand = new BindingCommand<Reflected>(CopyValue);
@@ -173,9 +177,17 @@ namespace RunCommandDocker
             proxyManager.RunCommandAsync(command);
         }
 
+        public void RunPinCommandAsync(Command command)
+        {
+            if (command.HasParam)
+                command.PrepareArguments();
+            proxyManager.RunCommandAsync(command,false);
+        }
         private void SetCommandReturnArgumentValue(Command command)
         {
             //Need checks for recursive 
+            //Is require a cache?
+            //Can pass the command to value and create the func in command runtime?
             Argument argument = GetArgument(command);
             if (argument != null)
                 argument.Value = new Func<Command, object>(
@@ -184,6 +196,7 @@ namespace RunCommandDocker
                         RunCommand(command);
                         return command.Returns;
                     });
+            
         }
         private void StopCommandAsync(Command command)
         {
@@ -311,6 +324,7 @@ namespace RunCommandDocker
                 if (lastCommand != null && lastCommand[0].Equals(project.Name))
                     project.IsExpanded = true;
                 Tuple<string, string>[] typesNames = proxy.GetTypesNames();
+                ObservableCollection<Module> tempList = new ObservableCollection<Module>();
                 for (int i = 0; i < typesNames.Length; i++)
                 {
                     Module m = new Module()
@@ -321,7 +335,8 @@ namespace RunCommandDocker
                     };
                     if (lastCommand != null && lastCommand[1].Equals(m.Name))
                         m.IsExpanded = true;
-                    project.Add(m);
+                    tempList.Add(m);
+                    //project.Add(m);
                     string[] commandNames = proxy.GetMethodNames(m.FullName);
                     for (int k = 0; k < commandNames.Length; k++)
                     {
@@ -331,6 +346,7 @@ namespace RunCommandDocker
                             Name = commandNames[k],
                             Parent = m
                         };
+                        m.Add(command);
                         var arguments = proxy.GetArguments(command);
 
                         command.AddRange(arguments);
@@ -340,9 +356,11 @@ namespace RunCommandDocker
                         if (lastCommand != null && lastCommand[2].Equals(command.Name))
                             command.IsSelected = true;
                         //if(!m.Contains(command))
-                        m.Add(command);
+                       
                     }
+                    
                 }
+                project.AddAndCheckRange(tempList);
             }
             catch (Exception e)
             {
@@ -394,20 +412,20 @@ namespace RunCommandDocker
             Project project = GetProject(name, path);
             if (project == null)
             {
-
                 project = new Project()
                 {
                     Name = name,
                     Path = path,
                     Parent = this
                 };
-                this.dispatcher.Invoke(new Action(() =>
-                {
-                    Projects.Add(project);
-                    SetModulesCommands(project);
-                    LoadPinnedCommands();
-                }));
             }
+            this.dispatcher.Invoke(new Action(() =>
+            {
+                if(!Projects.Contains(project))
+                    Projects.Add(project);
+                SetModulesCommands(project);
+                LoadPinnedCommands();
+            }));
         }
         private void DeleteProject(string name, string path)
         {
@@ -428,7 +446,7 @@ namespace RunCommandDocker
             {
                 this.dispatcher.Invoke(new Action(() =>
                 {
-                    Projects.Remove(project);
+                    //Projects.Remove(project);
                     CreateProject(name, path);
                 }));
             }

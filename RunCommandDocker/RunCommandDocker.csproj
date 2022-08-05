@@ -226,6 +226,7 @@
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Converters\ReverseBoolVisibilityConverter.cs" />
     <Compile Include="Converters\IntToVisibilityConverter.cs" />
+    <Compile Include="Converters\TypeToStringConverter.cs" />
     <Compile Include="Converters\TypeToVisibilityConverter.cs" />
     <Compile Include="DockerUI.xaml.cs">
       <DependentUpon>DockerUI.xaml</DependentUpon>

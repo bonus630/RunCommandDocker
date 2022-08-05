@@ -111,7 +111,19 @@ namespace RunCommandDocker
         // Compare to another Ref.:01
         private void TreeView_Selected(object sender, RoutedEventArgs e)
         {
-            projectsManager.SelectedCommand = (sender as TreeView).SelectedItem as Command;
+            try
+            {
+                projectsManager.SelectedCommand = (sender as TreeView).SelectedItem as Command;
+            }
+            catch(Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void TextBox_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            (sender as TextBox).SelectAll();
         }
     }
 }

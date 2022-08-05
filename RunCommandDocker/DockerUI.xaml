@@ -24,6 +24,7 @@
             <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
             <converters:TypeToVisibilityConverter x:Key="TypeToVisibilityConverter" />
+            <converters:TypeToStringConverter x:Key="TypeToStringConverter" />
             <converters:ReverseBoolVisibilityConverter x:Key="ReverseBoolVisibilityConverter" />
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <ResourceDictionary.MergedDictionaries>
@@ -201,7 +202,7 @@
                                                 <Label Grid.Row="0" Grid.Column="0" Content="{Binding Name}" />
                                                 <Label Grid.Row="0" Grid.Column="1" Content="{Binding ArgumentType.Name}" ToolTip="{Binding ArgumentType.FullName}"/>
                                                 <Label Grid.Row="1" Grid.Column="0" Content="Value:" />
-                                                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Value}" VerticalContentAlignment="Center" Width="144"/>
+                                                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Value,Converter={StaticResource TypeToStringConverter}}" VerticalContentAlignment="Center" Width="144" MouseLeftButtonUp="TextBox_MouseLeftButtonUp"/>
                                             </Grid>
                                         </DataTemplate>
                                     </ListView.ItemTemplate>
