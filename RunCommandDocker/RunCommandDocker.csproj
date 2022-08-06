@@ -232,6 +232,7 @@
       <DependentUpon>DockerUI.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="FuncToParam.cs" />
     <Compile Include="IconGen.cs" />
     <Compile Include="MyPopup\MyPopup.cs" />
     <Compile Include="MyPopup\PopupContent.xaml.cs">

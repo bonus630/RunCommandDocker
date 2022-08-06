@@ -76,9 +76,15 @@ namespace RunCommandDocker
 
 
         private Command selectedCommand;
-        public Command SelectedCommand { get { return selectedCommand; } set { 
-                selectedCommand = value; 
-                OnPropertyChanged("SelectedCommand"); } }
+        public Command SelectedCommand
+        {
+            get { return selectedCommand; }
+            set
+            {
+                selectedCommand = value;
+                OnPropertyChanged("SelectedCommand");
+            }
+        }
 
         public void LoadPinnedCommands()
         {
@@ -88,12 +94,12 @@ namespace RunCommandDocker
                 //encontrar o comando pelo caminho vai garantir melhor desempenho
                 var commandNames = Properties.Settings.Default.PinnedCommands;
                 PinnedCommands.Clear();
-              
+
                 for (int i = 0; i < commandNames.Count; i++)
                 {
                     var command = FindCommandByXPath(commandNames[i]);
 
-                   // Command c1 = pinnedCommands.FirstOrDefault(m => m.ToString().Equals(commandNames[i]));
+                    // Command c1 = pinnedCommands.FirstOrDefault(m => m.ToString().Equals(commandNames[i]));
                     if (command != null)
                     {
                         PinnedCommands.Add(command);
@@ -181,7 +187,7 @@ namespace RunCommandDocker
         {
             if (command.HasParam)
                 command.PrepareArguments();
-            proxyManager.RunCommandAsync(command,false);
+            proxyManager.RunCommandAsync(command, false);
         }
         private void SetCommandReturnArgumentValue(Command command)
         {
@@ -190,13 +196,18 @@ namespace RunCommandDocker
             //Can pass the command to value and create the func in command runtime?
             Argument argument = GetArgument(command);
             if (argument != null)
-                argument.Value = new Func<Command, object>(
+                argument.Value = new FuncToParam()
+                {
+                    Name = command.Name,
+                    FullPath = command.ToString(),
+                    MyFunc = new Func<Command, object>(
                     (c) =>
                     {
                         RunCommand(command);
                         return command.Returns;
-                    });
-            
+                    })
+                };
+
         }
         private void StopCommandAsync(Command command)
         {
@@ -250,7 +261,14 @@ namespace RunCommandDocker
             {
                 Argument argument = this.SelectedCommand.Items.FirstOrDefault(r => r.IsSelected);
                 if (argument != null)
-                    argument.Value = new Func<Command, object>(shapeRangeManager.GetShapes);
+                    argument.Value = new FuncToParam()
+                    {
+                        Name = "GetShapes",
+                        FullPath ="RunCommandDocker.GetShapes",
+                        MyFunc = new Func<Command, object>(shapeRangeManager.GetShapes)
+                    };
+
+                
             }
         }
         private void CopyValue(Reflected o)
@@ -356,9 +374,9 @@ namespace RunCommandDocker
                         if (lastCommand != null && lastCommand[2].Equals(command.Name))
                             command.IsSelected = true;
                         //if(!m.Contains(command))
-                       
+
                     }
-                    
+
                 }
                 project.AddAndCheckRange(tempList);
             }
@@ -370,7 +388,7 @@ namespace RunCommandDocker
             {
                 proxyManager.UnloadDomain();
             }
-            
+
 
         }
         private void CommandSelected(Command command)
@@ -421,7 +439,7 @@ namespace RunCommandDocker
             }
             this.dispatcher.Invoke(new Action(() =>
             {
-                if(!Projects.Contains(project))
+                if (!Projects.Contains(project))
                     Projects.Add(project);
                 SetModulesCommands(project);
                 LoadPinnedCommands();

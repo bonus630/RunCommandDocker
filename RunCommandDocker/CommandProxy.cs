@@ -70,8 +70,8 @@ namespace RunCommandDocker
                 Type type = AssemblyTypes.FirstOrDefault(t => t.FullName.Equals(command.Parent.FullName));
                 Ctor = () => (Activator.CreateInstance(commandAssembly.FullName, type.FullName, true, BindingFlags.Default, null, new object[] { app }, null, null).Unwrap());
                 Instance = Ctor();
-                
-                MethodInfo methodInfo = type.GetMethods().First(m => m.Name.Equals(command.Name));
+                MethodInfo methodInfo = GetMethodInfo(type, command);
+                //MethodInfo methodInfo = type.GetMethods().First(m => m.Name.Equals(command.Name));
                 //command.Items. ToArray<object>()
                 ActionRunCommand = () => methodInfo.Invoke(Instance, command.ArgumentsCache);
                 return Instance;
@@ -144,28 +144,12 @@ namespace RunCommandDocker
         {
             Type type = AssemblyTypes.FirstOrDefault(
                 r => r.FullName.Equals(command.Parent.FullName));
-            MethodInfo mi = null;
-            List<MethodInfo> mis = type.GetMethods().ToList();
-            int count = 0;
-            while (count < mis.Count)
-            {
-                if (!mis[count].Name.Equals(command.Name)) 
-                {
-                    mis.RemoveAt(count);
-                    
-                }
-                else
-                    count++;
-            }
-            for (int i = 0; i < mis.Count; i++)
-            {
-                if(i == command.ID)
-                    mi = mis[i];
-            }
+            MethodInfo methodInfo = GetMethodInfo(type,command);
+         
                 //type.GetMethods().FirstOrDefault(r=>r.Name.Equals(command.Name));
             //.GetMembers().FirstOrDefault(u => u.Name.Equals(command.Name));
-            command.ReturnsType = mi.ReturnType;
-            ParameterInfo[] parameters = mi.GetParameters();
+            command.ReturnsType = methodInfo.ReturnType;
+            ParameterInfo[] parameters = methodInfo.GetParameters();
             if (parameters == null)
                 return null;
            
@@ -182,6 +166,28 @@ namespace RunCommandDocker
             }
             return arguments;
             //Pq os items com os argumentos chegam nulos na ui, aqui são setados corretamente
+        }
+        private MethodInfo GetMethodInfo(Type type,Command command)
+        {
+            MethodInfo methodInfo = null;
+            List<MethodInfo> methodInfos = type.GetMethods().ToList();
+            int count = 0;
+            while (count < methodInfos.Count)
+            {
+                if (!methodInfos[count].Name.Equals(command.Name))
+                {
+                    methodInfos.RemoveAt(count);
+
+                }
+                else
+                    count++;
+            }
+            for (int i = 0; i < methodInfos.Count; i++)
+            {
+                if (i == command.ID)
+                    methodInfo = methodInfos[i];
+            }
+            return methodInfo;
         }
         public object RunCommand()
         {

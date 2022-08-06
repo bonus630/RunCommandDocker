@@ -21,8 +21,8 @@ namespace RunCommandDocker.Converters
                 return value;
             if (t.IsValueType)
                 return value.ToString();
-            if (value is Func<Command, object>)
-                return (value as Func<Command, object>).Method.Name;
+            if (value is FuncToParam)
+                return (value as FuncToParam).Name;
             return "NAN";
 
         }

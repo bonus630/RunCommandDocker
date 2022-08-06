@@ -320,7 +320,7 @@ namespace RunCommandDocker
                                     return;
                                 }
 
-                                objects[i] = (Items[i].Value as Func<Command, object>).Invoke(this);
+                                objects[i] = (Items[i].Value as FuncToParam).MyFunc.Invoke(this);
                             }
                         }
                         else
