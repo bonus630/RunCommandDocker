@@ -310,7 +310,18 @@ namespace RunCommandDocker
                         {
                             if (Items[i].Value.GetType().IsValueType || Items[i].Value is string)
                             {
-                                objects[i] = Convert.ChangeType(Items[i].Value, Items[i].ArgumentType);
+                                try
+                                {
+                                    objects[i] = Convert.ChangeType(Items[i].Value, Items[i].ArgumentType);
+                                }
+                                catch(InvalidCastException e)
+                                {
+                                    objects[i] = null;
+                                }
+                                catch (Exception e)
+                                {
+                                    objects[i] = null;
+                                }
                             }
                             else
                             {
