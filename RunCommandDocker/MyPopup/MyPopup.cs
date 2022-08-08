@@ -78,7 +78,7 @@ namespace RunCommandDocker.MyPopup
                 parent.Name = obj.GetType().FullName;
 
             ObservableCollection<Reflected> Childrens = new ObservableCollection<Reflected>();
-            if (parent.Name.Equals("Item"))
+            if (parent.Name.Equals("Items"))
             {
                 mainType = parent.Parent.Value.GetType();
                 Type[] interfaces = mainType.GetInterfaces();
@@ -137,10 +137,12 @@ namespace RunCommandDocker.MyPopup
 
                     Childrens.Add(item);
                 }
-                if (mainType.IsArray)
+                Type _interface = mainType.GetInterfaces().FirstOrDefault(r => r.Name.Equals("ICollection") || r.Name.Equals("IList") || r.Name.Equals("IEnumerable"));
+
+                if (mainType.IsArray || _interface!=null)
                 {
                     
-                    Reflected item = new Reflected() { Name = "Item", Value = obj, IsValueType = false, Parent = parent };
+                    Reflected item = new Reflected() { Name = "Items", Value = obj, IsValueType = false, Parent = parent };
                     item.Childrens = new ObservableCollection<Reflected>();
                     item.Childrens.Add(null);
                     Childrens.Add(item);

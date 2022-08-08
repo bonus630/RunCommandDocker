@@ -171,13 +171,14 @@
                                     </Button>
                                     <Label Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Content="Value:" />
 
-                                    <Grid  Grid.Row="1" Grid.Column="3" VerticalAlignment="Stretch" Background="Transparent" MouseEnter="Label_MouseEnter" >
+                                    <Grid  Grid.Row="1" Grid.Column="3" VerticalAlignment="Stretch" Background="Transparent" MouseEnter="Label_MouseEnter" 
+                                           Visibility="{Binding SelectedCommand.Returns,Converter={StaticResource NullToVisibilityConverter}}">
                                         <Label Content="{Binding SelectedCommand.Returns}" VerticalAlignment="Center"  x:Name="lba_returns" Margin="2"/>
                                     </Grid>
 
                                     <popup:MyPopup ToReflect="{Binding SelectedCommand.Returns}" PlacementTarget="{Binding ElementName=lba_returns}" Placement="Right" AllowsTransparency="True"
                                                        IsOpen="{Binding Path=MyPopupIsOpen}" 
-                                                           PopupCloseEvent="MyPopup_PopupCloseEvent"/>
+                                                           PopupCloseEvent="MyPopup_PopupCloseEvent" />
 
                                 </Grid>
                             </GroupBox>
@@ -313,7 +314,8 @@
                             </Grid.ContextMenu>
                             <Button Grid.Column="0" Style="{StaticResource NoBorderButton}" Width="16" Height="16"  
                                 Visibility="{Binding Path=HasParam,  Converter={StaticResource ReverseBoolVisibilityConverter}}"
-                        CommandParameter="{Binding}" Command="{Binding Path=DataContext.ExecuteCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=TreeView}}">
+                        CommandParameter="{Binding}" Command="{Binding Path=DataContext.ExecuteCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=TreeView}}"
+                                    KeyboardNavigation.DirectionalNavigation="None" KeyboardNavigation.TabNavigation="Continue">
                                 <Button.ToolTip>
                                     <StackPanel Orientation="Horizontal">
                                         <Label>Run</Label>
@@ -326,7 +328,8 @@
                             <Button Grid.Column="1"  Width="16" Height="16" Style="{DynamicResource NoBorderButton}"
                                 Visibility="{Binding ReturnsType,ConverterParameter={x:Type System:Void},Converter={StaticResource TypeToVisibilityConverter}}"
                                 CommandParameter="{Binding}" 
-                                Command="{Binding Path=DataContext.SetCommandToValueCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=TreeView}}">
+                                Command="{Binding Path=DataContext.SetCommandToValueCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=TreeView}}"
+                                    KeyboardNavigation.DirectionalNavigation="None">
                                 <Button.ToolTip>
                                     <Label Content="Set returns value to selected argument"/>
                                 </Button.ToolTip>
