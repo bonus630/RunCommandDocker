@@ -113,6 +113,16 @@ namespace RunCommandDocker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Fails {
+            get {
+                object obj = ResourceManager.GetObject("Fails", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap FolderBrowserDialogControl {
             get {
                 object obj = ResourceManager.GetObject("FolderBrowserDialogControl", resourceCulture);

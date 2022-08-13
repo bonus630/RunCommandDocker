@@ -50,7 +50,7 @@ namespace RunCommandDocker
     //    void AddAndCheckRange(ICommandCollection range);
 
     //}
-
+    //Apos mudar os parametros de um commando ele nao atualiza
     public abstract class CommandCollectionBase<T> : CommandBase where T : CommandBase
     {
 
@@ -238,18 +238,37 @@ namespace RunCommandDocker
 
             command.ID = count;
         }
+        public void RemoveAt(int commandIndex)
+        {
+            Command toDelete = Items[commandIndex];
+            if(toDelete.ID > 0)
+            {
+                for (int i = 0; i < Items.Count; i++)
+                {
+                    if (Items[i].ToString().Equals(toDelete.ToString()) && Items[i].ID > toDelete.ID)
+                        Items[i].ID--;
+
+                }
+
+            }
+            Items.RemoveAt(commandIndex);
+        }
         public override int GetHashCode()
         {
             return 733961487 + EqualityComparer<string>.Default.GetHashCode(this.ToString());
         }
         public void AddAndCheckRange(ObservableCollection<Command> commandList)
         {
-            if (Items == null)
-                Items = new ObservableCollection<Command>();
+        //    if (Items == null)
+        //        Items = new ObservableCollection<Command>();
             for (int i = 0; i < commandList.Count; i++)
             {
                 if (!Items.Contains(commandList[i]))
-                    Items.Add(commandList[i]);
+                    this.Add(commandList[i]);
+                //else
+                //{
+                //    this.Items[this.Items.IndexOf(commandList[i])].ReturnsType = commandList[i].ReturnsType;
+                //}
             }
             foreach (var comand in Items)
             {
@@ -269,7 +288,7 @@ namespace RunCommandDocker
             {
                 if (Items[count].MarkToDelete)
                 {
-                    Items.RemoveAt(count);
+                    this.RemoveAt(count);
 
                 }
                 else
@@ -314,7 +333,7 @@ namespace RunCommandDocker
                                 {
                                     objects[i] = Convert.ChangeType(Items[i].Value, Items[i].ArgumentType);
                                 }
-                                catch(InvalidCastException e)
+                                catch (InvalidCastException e)
                                 {
                                     objects[i] = null;
                                 }
@@ -403,6 +422,8 @@ namespace RunCommandDocker
             }
         }
         private bool canStop = false;
+        private bool lastRunFails;
+
         public bool CanStop
         {
             get { return canStop; }
@@ -414,6 +435,12 @@ namespace RunCommandDocker
 
             }
         }
+
+        public bool LastRunFails { get { return lastRunFails; }
+            set { lastRunFails = value;
+                OnPropertyChanged("LastRunFails");
+            } }
+
         public bool CheckSelected()
         {
             if (IsSelected)
@@ -463,6 +490,8 @@ namespace RunCommandDocker
                     return false;
                 if (!c.returnsType.Equals(this.returnsType))
                     return false;
+                if (c.Items == null && this.Items == null)
+                    return true;
                 if (c.Items != null && this.Items != null)
                 {
                     if (!c.Items.Count.Equals(this.Items.Count))
@@ -472,6 +501,10 @@ namespace RunCommandDocker
                         if (!c.Items[i].Equals(this.Items[i]))
                             return false;
                     }
+                }
+                else
+                {
+                    return false;
                 }
                 return true;
             }

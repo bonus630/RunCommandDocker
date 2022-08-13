@@ -64,7 +64,7 @@
                 <Image Style="{DynamicResource FolderOpenedImage}" />
             </Button>
         </Grid>
-      
+
         <Grid DockPanel.Dock="Bottom">
             <Grid.RowDefinitions>
                 <RowDefinition/>
@@ -171,7 +171,7 @@
                                     </Button>
                                     <Label Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Content="Value:" />
 
-                                    <Grid  Grid.Row="1" Grid.Column="3" VerticalAlignment="Stretch" Background="Transparent" MouseEnter="Label_MouseEnter" 
+                                    <Grid  Grid.Row="1" Grid.Column="3" MinWidth="100" VerticalAlignment="Stretch" Background="Transparent" MouseEnter="Label_MouseEnter" 
                                            Visibility="{Binding SelectedCommand.Returns,Converter={StaticResource NullToVisibilityConverter}}">
                                         <Label Content="{Binding SelectedCommand.Returns}" VerticalAlignment="Center"  x:Name="lba_returns" Margin="2"/>
                                     </Grid>
@@ -267,7 +267,7 @@
             </ItemsControl>
 
         </Grid>
-       <TreeView DockPanel.Dock="Top" ItemsSource="{Binding Projects}" Name="treeViewCommands"
+        <TreeView DockPanel.Dock="Top" ItemsSource="{Binding Projects}" Name="treeViewCommands"
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" TreeViewItem.Selected="TreeView_Selected">
             <!-- //Ref.:01 
             // Compare to another Ref.:01
@@ -325,6 +325,7 @@
                                 <Image Style="{DynamicResource PlayImage}" />
                             </Button>
                             <!--Visibility="{Binding Path=HasParam,  Converter={StaticResource ReverseBoolVisibilityConverter}}"-->
+                     
                             <Button Grid.Column="1"  Width="16" Height="16" Style="{DynamicResource NoBorderButton}"
                                 Visibility="{Binding ReturnsType,ConverterParameter={x:Type System:Void},Converter={StaticResource TypeToVisibilityConverter}}"
                                 CommandParameter="{Binding}" 
@@ -337,10 +338,24 @@
                                 <Image Style="{DynamicResource CheckmarkShapeRangeImage}" />
 
                             </Button>
+                            <Grid  Grid.Column="1"  Background="{Binding RelativeSource={RelativeSource AncestorType=Border,Mode=FindAncestor},Path=Background}" Width="16" Height="16" 
+                                   Visibility="{Binding LastRunFails,Converter={StaticResource BoolToVisibilityConverter}}">
+                                <Image Style="{DynamicResource FailsImage}">
+                                    <Image.ToolTip>
+                                        <StackPanel>
+                                            <Label Content="Fails" FontWeight="Bold"/>
+                                            <Label Content="The last run fails, try check your code!" />
+                                        </StackPanel>
+                                    </Image.ToolTip>
+                                </Image>
+                            </Grid>
                             <Label Grid.Column="2" VerticalAlignment="Center" Content="{Binding Name}" />
+
                         </Grid>
                         <ProgressBar Height="2" IsIndeterminate="True"  Visibility="{Binding CanStop,Converter={StaticResource BoolToVisibilityConverter}}"/>
-
+                        <StackPanel.ToolTip>
+                            <Label Content="{Binding Name}" />
+                        </StackPanel.ToolTip>
                     </StackPanel>
 
                 </DataTemplate>

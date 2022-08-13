@@ -32,6 +32,8 @@ namespace RunCommandDocker
         }
 
          public Reflected Parent { get; set; }
+        public bool IsIndexed { get; set; }
+        public int Index { get; set; }
 
         private bool isValueType;
 
@@ -42,7 +44,7 @@ namespace RunCommandDocker
                 OnPropertyChanged("IsValueType");
             }
         }
-
+        public bool Error { get; set; }
 
         private object _value;
 
@@ -76,5 +78,13 @@ namespace RunCommandDocker
             }
         }
     
+        public void Add(Reflected children)
+        {
+            if (childrens == null)
+                childrens = new ObservableCollection<Reflected>();
+            childrens.Add(children);
+            OnPropertyChanged("Childrens");
+        }
+
     }
 }

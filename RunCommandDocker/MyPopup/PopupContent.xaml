@@ -62,6 +62,16 @@
                                 </Button.ToolTip>
                                 <Image Style="{DynamicResource CopyImage}" />
                             </Button>
+                            <Grid  Grid.Column="0" Background="{DynamicResource Default.Static.Background}" Width="16" Height="16"   Visibility="{Binding Error,Converter={StaticResource BoolToVisibilityConverter}}">
+                                <Image Style="{DynamicResource FailsImage}">
+                                    <Image.ToolTip>
+                                        <StackPanel>
+                                            <Label Content="Exception" FontWeight="Bold"/>
+                                            <Label Content="Property throw an Exception" />
+                                        </StackPanel>
+                                    </Image.ToolTip>
+                                </Image>
+                            </Grid>
                             <Label Grid.Column="1" Content="{Binding Name}"/>
                             <Label Grid.Column="2" Content="{Binding Value}"/>
                         </Grid>

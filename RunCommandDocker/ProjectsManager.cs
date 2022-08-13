@@ -85,7 +85,36 @@ namespace RunCommandDocker
                 OnPropertyChanged("SelectedCommand");
             }
         }
+        string dir = "";
+        public string Dir { get { return dir; } set { dir = value; OnPropertyChanged("Dir"); } }
 
+
+
+        FileSystemWatcher fsw;
+        Thread startUpThread;
+        ProxyManager proxyManager;
+        Dispatcher dispatcher;
+        public ProjectsManager(Dispatcher dispatcher)
+        {
+            this.dispatcher = dispatcher;
+
+        }
+        public void Start(ProxyManager proxyManager)
+        {
+            projects = new ObservableCollection<Project>();
+            pinnedCommands = new ObservableCollection<Command>();
+            Dir = Properties.Settings.Default.FolderPath;
+            this.proxyManager = proxyManager;
+            ExecuteCommand = new BindingCommand<Command>(RunCommandAsync);
+            ExecutePinCommand = new BindingCommand<Command>(RunPinCommandAsync);
+            StopCommand = new BindingCommand<Command>(StopCommandAsync);
+            TogglePinCommand = new BindingCommand<Command>(PinCommand, CanPin);
+            CopyValueCommand = new BindingCommand<Reflected>(CopyValue);
+            CopyReturnsValueCommand = new BindingCommand<object>(CopyReturnsValue);
+            SetCommandToValueCommand = new BindingCommand<Command>(SetCommandReturnArgumentValue, CanRunSetCommandReturnArgVal);
+            SetShapeRangeToValueCommand = new SimpleCommand(SetShapeRangeArgumentValue);
+            startFolderMonitor(dir);
+        }
         public void LoadPinnedCommands()
         {
             try
@@ -132,36 +161,7 @@ namespace RunCommandDocker
             return null;
         }
 
-        string dir = "";
-        public string Dir { get { return dir; } set { dir = value; OnPropertyChanged("Dir"); } }
-
-
-
-        FileSystemWatcher fsw;
-        Thread startUpThread;
-        ProxyManager proxyManager;
-        Dispatcher dispatcher;
-        public ProjectsManager(Dispatcher dispatcher)
-        {
-            this.dispatcher = dispatcher;
-
-        }
-        public void Start(ProxyManager proxyManager)
-        {
-            projects = new ObservableCollection<Project>();
-            pinnedCommands = new ObservableCollection<Command>();
-            Dir = Properties.Settings.Default.FolderPath;
-            this.proxyManager = proxyManager;
-            ExecuteCommand = new BindingCommand<Command>(RunCommandAsync);
-            ExecuteCommand = new BindingCommand<Command>(RunPinCommandAsync);
-            StopCommand = new BindingCommand<Command>(StopCommandAsync);
-            TogglePinCommand = new BindingCommand<Command>(PinCommand, CanPin);
-            CopyValueCommand = new BindingCommand<Reflected>(CopyValue);
-            CopyReturnsValueCommand = new BindingCommand<object>(CopyReturnsValue);
-            SetCommandToValueCommand = new BindingCommand<Command>(SetCommandReturnArgumentValue, CanRunSetCommandReturnArgVal);
-            SetShapeRangeToValueCommand = new SimpleCommand(SetShapeRangeArgumentValue);
-            startFolderMonitor(dir);
-        }
+  
         /// <summary>
         /// Use this to fill parameters in command
         /// </summary>

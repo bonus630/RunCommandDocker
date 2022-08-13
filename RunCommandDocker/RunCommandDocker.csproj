@@ -330,6 +330,7 @@
     <None Include="Resources\Stop.png" />
     <None Include="Resources\Pin.png" />
     <None Include="Resources\Unpin.png" />
+    <None Include="Resources\Fails.png" />
     <Content Include="UserUI.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
