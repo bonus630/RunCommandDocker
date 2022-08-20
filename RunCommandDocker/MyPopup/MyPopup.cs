@@ -9,9 +9,8 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Reflection;
 using System.Threading;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 using System.Xml.Linq;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
+
 
 namespace RunCommandDocker.MyPopup
 {

@@ -76,6 +76,7 @@
       <dockerData guid="5087687d-337d-4d0e-acaf-c0b1df967757"
                   userCaption="Run Command"
                   wantReturn="true"
+				  icon="guid://69665B20-703D-4908-91AE-0AAE64A95426"
                   focusStyle="noThrow">
         <container>
           <!-- add the webpage control to the docker -->

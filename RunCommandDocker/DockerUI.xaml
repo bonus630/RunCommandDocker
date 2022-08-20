@@ -227,6 +227,11 @@
                                             <Image Style="{DynamicResource PinImage}"/>
                                         </MenuItem.Icon>
                                     </MenuItem>
+                                    <MenuItem >
+                                        <MenuItem.Header>
+                                            <CheckBox IsChecked="{Binding Path=Parent.IsExpanded}" Content="Expand Tree" />
+                                        </MenuItem.Header>
+                                    </MenuItem>
                                 </ContextMenu>
                             </StackPanel.ContextMenu>
                             <Button Grid.Column="0" Style="{StaticResource NoBorderButton}" Width="16" Height="16"  
@@ -275,8 +280,8 @@
 
             <TreeView.Resources>
                 <Style BasedOn="{StaticResource TreeViewItemCustomStyle}" TargetType="{x:Type TreeViewItem}">
-                    <Setter Property="TreeViewItem.IsExpanded" Value="{Binding IsExpanded}"/>
-                    <Setter Property="TreeViewItem.IsSelected" Value="{Binding IsSelected}"/>
+                    <Setter Property="TreeViewItem.IsExpanded" Value="{Binding IsExpanded,Mode=TwoWay}"/>
+                    <Setter Property="TreeViewItem.IsSelected" Value="{Binding IsSelected,Mode=TwoWay}"/>
                 </Style>
                 <HierarchicalDataTemplate  ItemsSource="{Binding Path=Items}" DataType="{x:Type local:Project}">
                     <Grid>

@@ -56,10 +56,12 @@ namespace RunCommandDocker
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
             Assembly asm = null;
-   
-            asm = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(r => string.Equals(r.FullName.Split(',')[0], args.Name.Split(',')[0]));
+            string name = args.Name;
+            if (name.Contains(".resources"))
+                name = name.Replace(".resources", "");
+            asm = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(r => string.Equals(r.FullName.Split(',')[0], name.Split(',')[0]));
             if (asm == null)
-                asm = Assembly.LoadFrom(args.Name);
+                asm = Assembly.LoadFrom(Name);
             return asm;
         }
         private void LoadDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)

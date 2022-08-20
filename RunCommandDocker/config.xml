@@ -1,0 +1,11 @@
+﻿<?xml version="1.0"?>
+<config>
+	<resources>
+		<resource name="RunCommand" path="RunCommandDocker.dll">
+			<resourceMap>
+				<!-- Toolbox icon and string resource -->
+				<resEntry id="69665B20-703D-4908-91AE-0AAE64A95426" string="10223" icon="110"/>
+      </resourceMap>
+		</resource>
+	</resources>
+</config>
