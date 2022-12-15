@@ -28,6 +28,7 @@ namespace RunCommandDocker
         public void Execute(object parameter)
         {
             RunPath.Invoke((T)parameter);
+            
         }
     }
     public class SimpleCommand : ICommand

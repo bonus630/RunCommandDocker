@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 
+
 namespace RunCommandDocker
 {
     public class ProxyManager
@@ -15,13 +16,13 @@ namespace RunCommandDocker
         AppDomain loadDomain;
         AppDomainSetup loadDomainSetup;
 
-
+      
         object corelApp;
         public string LastCommandPath { get { 
                 return Properties.Settings.Default.LastCommand; } set { 
                 Properties.Settings.Default.LastCommand = value; 
                 Properties.Settings.Default.Save(); } }
-
+    
         public ProxyManager(object corelApp, string path)
         {
             loadDomainList = new List<AppDomain>();
@@ -78,6 +79,7 @@ namespace RunCommandDocker
             worker.CommandPath = command.ToString();
             worker.WorkerSupportsCancellation = true;
             command.CanStop = true;
+            command.StartTimer();
             if (nextSlot == -1)
             {
                 this.loadDomainList.Add(runDomainAsync);
@@ -115,6 +117,8 @@ namespace RunCommandDocker
         private void WorkerIsCompletedOrCanceled(BackgroundWorkerIded  worker,AppDomain runDomainAsync,int nextSlot,Command command)
         {
             command.CanStop = false;
+            command.EndTimer();
+            
             worker = null;
             UnloadDomain(runDomainAsync);
             this.workers[nextSlot] = null;

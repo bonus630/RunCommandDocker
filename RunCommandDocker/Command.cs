@@ -1,8 +1,12 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
+using System.Windows.Documents;
+using System.Windows.Threading;
 
 namespace RunCommandDocker
 {
@@ -15,13 +19,14 @@ namespace RunCommandDocker
         //Lets uses this flag for now
         public bool MarkToDelete = false;
         protected bool isSelected;
-        public virtual bool IsSelected
+        public virtual bool IsSelectedBase
         {
             get { return isSelected; }
             set
             {
                 isSelected = value;
-                OnPropertyChanged("IsSelected");
+                OnPropertyChanged("IsSelectedBase");
+             
             }
         }
         protected bool isExpanded;
@@ -410,12 +415,13 @@ namespace RunCommandDocker
             if (CommandSelectedEvent != null)
                 CommandSelectedEvent(this);
         }
-        public override bool IsSelected
+        public override bool IsSelectedBase
         {
-            get { return base.IsSelected; }
+            get { return base.IsSelectedBase; }
             set
             {
-                base.IsSelected = value;
+
+                base.IsSelectedBase = value;
 
                 onCommandSelected();
 
@@ -435,7 +441,48 @@ namespace RunCommandDocker
 
             }
         }
+        #region Timer
+        //Thread TimerThread ;
+       // DispatcherTimer dispatcherTimer;
+       // bool timerRunning = false;
+        private string elapsedTime;
+        public string ElapsedTime
+        {
+            get { return elapsedTime; }
+            set
+            {
+                elapsedTime = value;
+                OnPropertyChanged("ElapsedTime");
+            }
+        }
+        private DateTime StartTime { get; set; }
+        //private DateTime EndTime { get; set; }
+        public void StartTimer()
+        {
+            //timerRunning = true;
+            StartTime = DateTime.Now;
+            ElapsedTime = "";
+            //dispatcherTimer = new DispatcherTimer();
+            //dispatcherTimer.Interval = TimeSpan.FromMilliseconds(1000);
+            //dispatcherTimer.Tick += DispatcherTimer_Tick;
+            //dispatcherTimer.Start();
+            // TimerThread = new Thread(new ThreadStart(RunTimer));
+            // TimerThread.IsBackground = true;
+            // TimerThread.Start();
+        }
+        public void EndTimer()
+        {
+            //timerRunning = false;
+           // dispatcherTimer.Stop();
+            ElapsedTime = (new DateTime(DateTime.Now.Subtract(StartTime).Ticks)).ToString("H:mm:ss.ff");
+        }
+     
 
+        //private void DispatcherTimer_Tick(object sender, EventArgs e)
+        //{
+        //    ElapsedTime = (new DateTime(DateTime.Now.Subtract(StartTime).Ticks)).ToString("H:mm:ss.ff");
+        //}
+        #endregion Timer
         public bool LastRunFails { get { return lastRunFails; }
             set { lastRunFails = value;
                 OnPropertyChanged("LastRunFails");
@@ -443,11 +490,11 @@ namespace RunCommandDocker
 
         public bool CheckSelected()
         {
-            if (IsSelected)
+            if (IsSelectedBase)
             {
                 OnPropertyChanged("Items");
             }
-            return IsSelected;
+            return IsSelectedBase;
         }
         public void AddRange(object[] range)
         {
@@ -513,6 +560,21 @@ namespace RunCommandDocker
                 return false;
             }
         }
+        public override int GetHashCode()
+        {
+            int hashCode = 1974103776;
+            hashCode = hashCode * -1521134295 + EqualityComparer<Type>.Default.GetHashCode(returnsType);
+            hashCode = hashCode * -1521134295 + EqualityComparer<String>.Default.GetHashCode(Name);
+            if (Items != null)
+            {
+                hashCode = hashCode * -1521134295 + EqualityComparer<int>.Default.GetHashCode(Items.Count);
+                hashCode = hashCode * -1521134295 + EqualityComparer<object>.Default.GetHashCode(Items);
+            }
+            else
+                hashCode = hashCode * -1521134295 + EqualityComparer<object>.Default.GetHashCode(0);
+
+            return hashCode;
+        }
     }
     public class Argument : CommandBase
     {
@@ -538,26 +600,28 @@ namespace RunCommandDocker
                 OnPropertyChanged("Value");
             }
         }
+  
         public override bool Equals(object obj)
         {
+            bool equals = false;
             try
             {
                 Argument argument = obj as Argument;
-                if (argument == null)
-                    return false;
-                return (argument.Name.Equals(this.Name)) && (argument.ArgumentType.Equals(this.ArgumentType));
+                if (argument != null)
+                    equals = (argument.Name.Equals(this.Name)) && (argument.ArgumentType.Equals(this.ArgumentType));
             }
             catch
             {
-                return false;
+                
             }
+            return equals;
         }
 
         public override int GetHashCode()
         {
             int hashCode = 1974103776;
             hashCode = hashCode * -1521134295 + EqualityComparer<Type>.Default.GetHashCode(ArgumentType);
-            hashCode = hashCode * -1521134295 + EqualityComparer<object>.Default.GetHashCode(Value);
+            hashCode = hashCode * -1521134295 + EqualityComparer<String>.Default.GetHashCode(Name);
             return hashCode;
         }
     }

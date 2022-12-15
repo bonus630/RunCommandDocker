@@ -123,9 +123,7 @@ namespace RunCommandDocker
             }
         }
 
-        private void TextBox_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            /*(sender as TextBox).SelectAll()*/;
-        }
+    
+
     }
 }

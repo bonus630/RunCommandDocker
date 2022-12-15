@@ -27,6 +27,7 @@
             <converters:TypeToStringConverter x:Key="TypeToStringConverter" />
             <converters:ReverseBoolVisibilityConverter x:Key="ReverseBoolVisibilityConverter" />
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <converters:EmptyStringToVisibilityConverter x:Key="EmptyStringToVisibilityConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles/Colors.xaml"/>
                 <ResourceDictionary Source="Styles/Styles.xaml"/>
@@ -142,9 +143,11 @@
                                     <Label Content="{Binding SelectedCommand.Name}" />
                                 </StackPanel>
                                 <ProgressBar Height="2" IsIndeterminate="True"  Visibility="{Binding SelectedCommand.CanStop,Converter={StaticResource BoolToVisibilityConverter}}"/>
+
                             </StackPanel>
                         </Expander.Header>
                         <StackPanel Margin="0">
+                            <Label Content="{Binding SelectedCommand.ElapsedTime}" Visibility="{Binding SelectedCommand.ElapsedTime,Converter={StaticResource EmptyStringToVisibilityConverter}}"/>
                             <GroupBox Header="Return" Margin="0,0,0,10" Visibility="{Binding SelectedCommand.ReturnsType,ConverterParameter={x:Type System:Void},Converter={StaticResource TypeToVisibilityConverter}}">
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -183,32 +186,41 @@
                                 </Grid>
                             </GroupBox>
                             <GroupBox Header="Params" Visibility="{Binding SelectedCommand.Count,Converter={StaticResource IntToVisibilityConverter},FallbackValue=0}" Margin="0,10">
-                                <ListView  ItemsSource="{Binding SelectedCommand.Items}" SelectionMode="Single" BorderThickness="0">
-                                    <ListView.ItemContainerStyle>
-                                        <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource ListViewItemCustomStyle}">
-                                            <Setter Property="IsSelected" Value="{Binding IsSelected}" />
-                                        </Style>
-                                    </ListView.ItemContainerStyle>
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*" />
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition />
-                                                    <RowDefinition />
-                                                </Grid.RowDefinitions>
-                                                <Label Grid.Row="0" Grid.Column="0" Content="{Binding Name}" />
-                                                <Label Grid.Row="0" Grid.Column="1" Content="{Binding ArgumentType.Name}" ToolTip="{Binding ArgumentType.FullName}"/>
-                                                <Label Grid.Row="1" Grid.Column="0" Content="Value:" />
-                                                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Value,Converter={StaticResource TypeToStringConverter}}" VerticalContentAlignment="Center" Width="144" MouseLeftButtonUp="TextBox_MouseLeftButtonUp"/>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
+                                <Grid>
+                                    <ListView BorderThickness="0" 
+                                        ItemsSource="{Binding SelectedCommand.Items}" 
+                                              SelectionMode="Single" KeyboardNavigation.TabNavigation="Continue" >
 
+                                        <ListView.ItemContainerStyle>
+                                            <Style BasedOn="{StaticResource ListViewItemCustomStyle}" TargetType="{x:Type ListViewItem}">
+                                                <Setter Property="IsSelected" Value="{Binding IsSelectedBase,Mode=TwoWay}" />
+                                                <Setter Property="IsTabStop" Value="False" />
+                                           
+                                            </Style>
+                                        </ListView.ItemContainerStyle>
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition />
+                                                        <RowDefinition />
+                                                    </Grid.RowDefinitions>
+                                                    <Label Grid.Row="0" Grid.Column="0" Content="{Binding Name}" />
+                                                    <Label Grid.Row="0" Grid.Column="1" Content="{Binding ArgumentType.Name}" ToolTip="{Binding ArgumentType.FullName}"/>
+                                                    <Label Grid.Row="1" Grid.Column="0" Content="Value:" />
+                                                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Value,Converter={StaticResource TypeToStringConverter}}" 
+                                                             
+                                                             VerticalContentAlignment="Center" Width="144"  />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+
+                                </Grid>
                             </GroupBox>
                         </StackPanel>
                     </Expander>
@@ -281,7 +293,7 @@
             <TreeView.Resources>
                 <Style BasedOn="{StaticResource TreeViewItemCustomStyle}" TargetType="{x:Type TreeViewItem}">
                     <Setter Property="TreeViewItem.IsExpanded" Value="{Binding IsExpanded,Mode=TwoWay}"/>
-                    <Setter Property="TreeViewItem.IsSelected" Value="{Binding IsSelected,Mode=TwoWay}"/>
+                    <Setter Property="TreeViewItem.IsSelected" Value="{Binding IsSelectedBase,Mode=TwoWay}"/>
                 </Style>
                 <HierarchicalDataTemplate  ItemsSource="{Binding Path=Items}" DataType="{x:Type local:Project}">
                     <Grid>
@@ -330,7 +342,7 @@
                                 <Image Style="{DynamicResource PlayImage}" />
                             </Button>
                             <!--Visibility="{Binding Path=HasParam,  Converter={StaticResource ReverseBoolVisibilityConverter}}"-->
-                     
+
                             <Button Grid.Column="1"  Width="16" Height="16" Style="{DynamicResource NoBorderButton}"
                                 Visibility="{Binding ReturnsType,ConverterParameter={x:Type System:Void},Converter={StaticResource TypeToVisibilityConverter}}"
                                 CommandParameter="{Binding}" 

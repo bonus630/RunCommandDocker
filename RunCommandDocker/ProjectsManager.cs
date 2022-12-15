@@ -85,6 +85,8 @@ namespace RunCommandDocker
                 OnPropertyChanged("SelectedCommand");
             }
         }
+   
+
         string dir = "";
         public string Dir { get { return dir; } set { dir = value; OnPropertyChanged("Dir"); } }
 
@@ -250,7 +252,7 @@ namespace RunCommandDocker
 
             if (this.SelectedCommand != null)
             {
-                return this.SelectedCommand.Items.FirstOrDefault(r => r.IsSelected);
+                return this.SelectedCommand.Items.FirstOrDefault(r => r.IsSelectedBase);
 
             }
             return null;
@@ -259,7 +261,7 @@ namespace RunCommandDocker
         {
             if (this.SelectedCommand != null)
             {
-                Argument argument = this.SelectedCommand.Items.FirstOrDefault(r => r.IsSelected);
+                Argument argument = this.SelectedCommand.Items.FirstOrDefault(r => r.IsSelectedBase);
                 if (argument != null)
                     argument.Value = new FuncToParam()
                     {
@@ -372,7 +374,7 @@ namespace RunCommandDocker
 
                         command.CommandSelectedEvent += CommandSelected;
                         if (lastCommand != null && lastCommand[2].Equals(command.Name))
-                            command.IsSelected = true;
+                            command.IsSelectedBase = true;
                         //if(!m.Contains(command))
 
                     }
