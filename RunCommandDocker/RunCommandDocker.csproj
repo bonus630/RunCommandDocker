@@ -199,6 +199,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -218,6 +219,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="CustomControls\IconButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DockerUI.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -232,6 +237,9 @@
     <Compile Include="Converters\IntToVisibilityConverter.cs" />
     <Compile Include="Converters\TypeToStringConverter.cs" />
     <Compile Include="Converters\TypeToVisibilityConverter.cs" />
+    <Compile Include="CustomControls\IconButton.xaml.cs">
+      <DependentUpon>IconButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DockerUI.xaml.cs">
       <DependentUpon>DockerUI.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -242,6 +250,7 @@
     <Compile Include="MyPopup\PopupContent.xaml.cs">
       <DependentUpon>PopupContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ProjectCreator.cs" />
     <Compile Include="ProjectsManager.cs" />
     <Compile Include="ProxyManager.cs" />
     <Compile Include="Reflected.cs" />
@@ -317,6 +326,13 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Resources\ArrowHeadDown.png" />
+    <Content Include="Templates\MacroClassLibraryCS.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\MacroClassLibraryVB.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="AppUI.xslt">
@@ -341,6 +357,8 @@
     <Content Include="resources.rct">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\BuildSolution.png" />
+    <None Include="Resources\New.png" />
     <Content Include="UserUI.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

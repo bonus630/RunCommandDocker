@@ -259,7 +259,7 @@ namespace RunCommandDocker
         }
         private void SetShapeRangeArgumentValue()
         {
-            if (this.SelectedCommand != null)
+            if (this.SelectedCommand != null && this.SelectedCommand.Items != null)
             {
                 Argument argument = this.SelectedCommand.Items.FirstOrDefault(r => r.IsSelectedBase);
                 if (argument != null)
@@ -273,6 +273,18 @@ namespace RunCommandDocker
                 
             }
         }
+        //private bool CanRunSetShapeRangeArgumentValue(object o)
+        //{
+        //    if (this.SelectedCommand != null && this.SelectedCommand.Items != null)
+        //    {
+        //        Argument argument = this.SelectedCommand.Items.FirstOrDefault(r => r.IsSelectedBase);
+        //        return (argument != null);
+                 
+
+
+        //    }
+        //    return false;
+        //}
         private void CopyValue(Reflected o)
         {
             Clipboard.SetText(o.Value.ToString());

@@ -36,10 +36,12 @@ namespace RunCommandDocker
         public event EventHandler CanExecuteChanged;
 
         Action RunPath;
+      
         public SimpleCommand(Action action)
         {
             this.RunPath = action;
         }
+      
         public bool CanExecute(object parameter)
         {
             return true;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -43,15 +44,15 @@ namespace RunCommandDocker
         {
             if (Properties.Settings.Default.PinnedCommands == null)
                 Properties.Settings.Default.PinnedCommands = new System.Collections.Specialized.StringCollection();
-        
+
             projectsManager = new ProjectsManager(this.Dispatcher);
             projectsManager.shapeRangeManager = shapeRangeManager;
             projectsManager.Start(proxyManager);
             this.DataContext = projectsManager;
 
         }
-        
-        
+
+
 
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
@@ -68,11 +69,11 @@ namespace RunCommandDocker
         {
             Debug.WriteLine("AssemblyLoad sender:{0} args{1}", sender, args.LoadedAssembly.CodeBase);
         }
-       
+
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             stylesController.LoadThemeFromPreference();
-            
+
         }
 
         private void btn_selectFolder_Click(object sender, RoutedEventArgs e)
@@ -117,13 +118,82 @@ namespace RunCommandDocker
             {
                 projectsManager.SelectedCommand = (sender as TreeView).SelectedItem as Command;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 System.Windows.MessageBox.Show(ex.ToString());
             }
         }
 
-    
+        private void btn_newProject_Click(object sender, RoutedEventArgs e)
+        {
+            popup_newProject.IsOpen = !popup_newProject.IsOpen;
+        }
+        ProjectCreator pc = new ProjectCreator();
+        private void btn_buildProject_Click(object sender, RoutedEventArgs e)
+        {
+            pc.Build();
+        }
 
+        private void btn_createProject_Click(object sender, RoutedEventArgs e)
+        {
+            int index = cb_projectType.SelectedIndex;
+            if (index > -1
+                && !string.IsNullOrEmpty(txt_projectFolder.Text)
+                && !string.IsNullOrEmpty(txt_projectName.Text))
+            {
+                pc.Index = index;
+                pc.SetProjectName(txt_projectName.Text);
+                pc.ProjectFolder = txt_projectFolder.Text;
+                pc.AssembliesFolder = this.projectsManager.Dir;
+                pc.VgCore = corelApp.ProgramPath + "Assemblies\\Corel.Interop.VGCore.dll";
+                pc.ExtractFiles(Path.Combine(corelApp.AddonPath, "RunCommandDocker", "Templates"));
+
+                pc.ReplaceFiles();
+                pc.Build();
+
+            }
+            Reset();
+        }
+        private void Reset()
+        {
+            popup_newProject.IsOpen = false;
+            cb_projectType.SelectedIndex = -1;
+            txt_projectFolder.Text = "";
+            txt_projectName.Text = "";
+        }
+        private void btn_selectProjectFolder_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog();
+            if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                try
+                {
+                    string testDir = Path.Combine(fbd.SelectedPath, "test.txt");
+                    using (File.Create(testDir)) { }
+                    txt_projectFolder.Text = fbd.SelectedPath;
+                    File.Delete(testDir);
+                }
+                catch(IOException ioe)
+                {
+                    corelApp.MsgShow("Directory access limited, please choose another!");
+                }
+            }
+        }
+
+        private void btn_cancelProject_Click(object sender, RoutedEventArgs e)
+        {
+            Reset();
+        }
+
+        private void btn_setProject_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog();
+            ofd.Multiselect = false;
+            ofd.Filter = "Proj (*.csproj,*.vbproj)|*.csproj;*.vbproj";
+            if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                pc.LastProject = ofd.FileName;
+            }
+        }
     }
 }

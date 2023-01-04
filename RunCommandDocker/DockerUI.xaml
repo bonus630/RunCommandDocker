@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:local="clr-namespace:RunCommandDocker" 
-             xmlns:popup="clr-namespace:RunCommandDocker.MyPopup" 
+             xmlns:popup="clr-namespace:RunCommandDocker.MyPopup"
+             xmlns:custom="clr-namespace:RunCommandDocker.CustomControls"
              d:DataContext="{d:DesignInstance Type=local:ProjectsManager}"
              xmlns:converters="clr-namespace:RunCommandDocker.Converters"
              mc:Ignorable="d" 
@@ -40,15 +41,19 @@
 
     </UserControl.Resources>
     <DockPanel LastChildFill="true">
-        <Grid Height="26" DockPanel.Dock="Top" HorizontalAlignment="Right">
+        <Grid Height="26" DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="26"/>
+                <ColumnDefinition Width="22"/>
+                <ColumnDefinition Width="12" />
+                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="26"/>
                 <ColumnDefinition Width="26"/>
-                <ColumnDefinition Width="26"/>
-                <ColumnDefinition Width="26"/>
-                <ColumnDefinition Width="26"/>
+              
             </Grid.ColumnDefinitions>
+            <custom:IconButton Grid.Column="0" BorderThickness="0" Background="Transparent" Icon="New" Width="22" Height="22" x:Name="btn_newProject" Click="btn_newProject_Click" ToolTip="Create a new project"/>
+            <custom:IconButton  Grid.Column="1" Icon="BuildSolution" Width="22" Height="22" x:Name="btn_buildProject" Click="btn_buildProject_Click" ToolTip="Build a project"/>
+            <custom:IconButton  Grid.Column="2" Icon="ArrowHeadDown" Width="12" Height="12" x:Name="btn_setProject" Click="btn_setProject_Click" VerticalContentAlignment="Center"/>
             <Button Grid.Column="5" Style="{DynamicResource NoBorderButton}" Width="22" Height="22" Name="btn_selectFolder" Click="btn_selectFolder_Click">
                 <Button.ToolTip>
                     <Label Content="Select a folder to monitor"/>
@@ -64,6 +69,34 @@
                 </Button.ToolTip>
                 <Image Style="{DynamicResource FolderOpenedImage}" />
             </Button>
+            <Popup x:Name="popup_newProject" StaysOpen="True" Placement="Right">
+                <Border Padding="10" BorderThickness="0" Style="{DynamicResource PopupBorder}">
+                    <Border Padding="20" BorderThickness="1" BorderBrush="{DynamicResource Container.Text.Static.Foreground}">
+                        <StackPanel>
+                            <Label Content="Create a New Project" FontSize="20"/>
+                            <Label Content="Project Type" Margin="0,10,0,0"/>
+                            <ComboBox Width="260" Height="30" VerticalContentAlignment="Center" Name="cb_projectType">
+                                <ComboBoxItem Content="CSharp" />
+                                <ComboBoxItem Content="Visual Basic" />
+                            </ComboBox>
+                            <Label Content="Project Name"  Margin="0,10,0,0"/>
+                            <TextBox Width="260" Height="30" VerticalContentAlignment="Center" Name="txt_projectName"/>
+                            <Label Content="Location"  Margin="0,10,0,0"/>
+                            <Grid>
+                                <TextBox Width="220" HorizontalAlignment="Left" Height="30" VerticalContentAlignment="Center" Name="txt_projectFolder"/>
+                                <Button Content="..." Height="30" Width="30" Style="{DynamicResource ButtonStyle1}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                                        HorizontalAlignment="Right" Margin="10,0,0,0" Name="btn_selectProjectFolder" Click="btn_selectProjectFolder_Click"/>
+                            </Grid>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                                <Button Content="Cancel" Style="{DynamicResource ButtonStyle1}"  HorizontalAlignment="Right" Width="60" Height="30" VerticalContentAlignment="Center" Name="btn_cancelProject" Click="btn_cancelProject_Click"/>
+
+                                <Button Content="Create" Style="{DynamicResource ButtonStyle1}" Margin="10,0,0,0" HorizontalAlignment="Right" Width="60" Height="30" VerticalContentAlignment="Center" Name="btn_createProject" Click="btn_createProject_Click"/>
+
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Border>
+            </Popup>
         </Grid>
 
         <Grid DockPanel.Dock="Bottom">
@@ -195,7 +228,7 @@
                                             <Style BasedOn="{StaticResource ListViewItemCustomStyle}" TargetType="{x:Type ListViewItem}">
                                                 <Setter Property="IsSelected" Value="{Binding IsSelectedBase,Mode=TwoWay}" />
                                                 <Setter Property="IsTabStop" Value="False" />
-                                           
+
                                             </Style>
                                         </ListView.ItemContainerStyle>
                                         <ListView.ItemTemplate>
