@@ -63,11 +63,26 @@
     <System:String x:Key="Unpin">Unpin</System:String>
     <Style x:Key="UnpinImage" TargetType="Image">
         <Setter Property="Source" Value="{Binding Source={StaticResource Unpin},Converter={StaticResource ResourceToMediaImageConverter}}"/>
-    </Style>  
-    
+    </Style>
+
+    <System:String x:Key="Edit">Edit</System:String>
+    <Style x:Key="EditImage" TargetType="Image">
+        <Setter Property="Source" Value="{Binding Source={StaticResource Edit},Converter={StaticResource ResourceToMediaImageConverter}}"/>
+    </Style>
+
     <System:String x:Key="Fails">Fails</System:String>
     <Style x:Key="FailsImage" TargetType="Image">
         <Setter Property="Source" Value="{Binding Source={StaticResource Fails},Converter={StaticResource ResourceToMediaImageConverter}}"/>
+    </Style>
+
+    <System:String x:Key="BuildSolution">BuildSolution</System:String>
+    <Style x:Key="BuildSolutionImage" TargetType="Image">
+        <Setter Property="Source" Value="{Binding Source={StaticResource BuildSolution},Converter={StaticResource ResourceToMediaImageConverter}}"/>
+    </Style>
+
+    <System:String x:Key="ArrowHeadDown">ArrowHeadDown</System:String>
+    <Style x:Key="ArrowHeadDownImage" TargetType="Image">
+        <Setter Property="Source" Value="{Binding Source={StaticResource ArrowHeadDown},Converter={StaticResource ResourceToMediaImageConverter}}"/>
     </Style>
 
 </ResourceDictionary>

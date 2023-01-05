@@ -38,30 +38,9 @@
                         <ControlTemplate TargetType="{x:Type local:IconButton}">
                             <Border CornerRadius="{TemplateBinding CornerRadius}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" x:Name="border" 
                                     BorderBrush="Transparent" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
-                                <!--<Border.Background>
-                                    <ImageBrush Stretch="Fill" ImageSource="{TemplateBinding Icon,Converter={StaticResource mediaConverter}}"/>
-                                </Border.Background>-->
                                 <Grid>
                                     <ContentPresenter Visibility="Collapsed" x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                                    <Grid>
-                                        <Border Canvas.Left="0" Canvas.Top="00" Width="Auto" Height="Auto" Margin="0" VerticalAlignment="Top" CornerRadius="{TemplateBinding CornerRadius}">
-                                            <Border.Effect>
-                                                <DropShadowEffect BlurRadius="5" Opacity=".5" ShadowDepth="3" />
-                                            </Border.Effect>
-                                            <Border Name="ReceiverColor" BorderBrush="#FF96B2E4" BorderThickness="0" CornerRadius="{TemplateBinding CornerRadius}">
-                                                <Grid>
-                                                    <Border Name="Mask" Background="{DynamicResource Default.Static.Inverted.Foreground}" BorderBrush="#FF3B5998" BorderThickness=".5" CornerRadius="{TemplateBinding CornerRadius}"/>
-
-                                                    <StackPanel>
-                                                        <Image Name="Receiver" Source="{TemplateBinding Icon,Converter={StaticResource mediaConverter}}" />
-                                                        <StackPanel.OpacityMask>
-                                                            <VisualBrush Visual="{Binding ElementName=Mask}" />
-                                                        </StackPanel.OpacityMask>
-                                                    </StackPanel>
-                                                </Grid>
-                                            </Border>
-                                        </Border>
-                                    </Grid>
+                                    <Image Name="Receiver" Source="{TemplateBinding Icon,Converter={StaticResource mediaConverter}}" />
                                     <!--<Image Source="{TemplateBinding Icon,Converter={StaticResource mediaConverter}}" Stretch="Fill" Margin="1"/>-->
                                     <!--Width="{TemplateBinding Width}" Height="{TemplateBinding Height}"-->
                                 </Grid>

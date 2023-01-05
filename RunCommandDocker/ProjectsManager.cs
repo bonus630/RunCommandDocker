@@ -25,6 +25,7 @@ namespace RunCommandDocker
         public BindingCommand<Command> ExecutePinCommand { get; set; }
         public BindingCommand<Command> StopCommand { get; set; }
         public BindingCommand<Command> TogglePinCommand { get; set; }
+        public BindingCommand<Module> EditModuleCommand { get; set; }
         public BindingCommand<Command> SetCommandToValueCommand { get; set; }
         public BindingCommand<Reflected> CopyValueCommand { get; set; }
         public BindingCommand<object> CopyReturnsValueCommand { get; set; }
@@ -111,6 +112,7 @@ namespace RunCommandDocker
             ExecutePinCommand = new BindingCommand<Command>(RunPinCommandAsync);
             StopCommand = new BindingCommand<Command>(StopCommandAsync);
             TogglePinCommand = new BindingCommand<Command>(PinCommand, CanPin);
+            EditModuleCommand = new BindingCommand<Module>(EditModule, CanEditModule);
             CopyValueCommand = new BindingCommand<Reflected>(CopyValue);
             CopyReturnsValueCommand = new BindingCommand<object>(CopyReturnsValue);
             SetCommandToValueCommand = new BindingCommand<Command>(SetCommandReturnArgumentValue, CanRunSetCommandReturnArgVal);
@@ -241,6 +243,14 @@ namespace RunCommandDocker
             }
             return canPin;
         }
+        private void EditModule(Module module)
+        {
+            Process.Start(module.ModulePath);
+        }
+        private bool CanEditModule(Module module)
+        {
+            return !string.IsNullOrEmpty(module.ModulePath);
+        }
         private bool CanRunSetCommandReturnArgVal(Command command)
         {
             if (command.ReturnsType == null || command.ReturnsType == typeof(void))
@@ -355,7 +365,7 @@ namespace RunCommandDocker
                 }
                 if (lastCommand != null && lastCommand[0].Equals(project.Name))
                     project.IsExpanded = true;
-                Tuple<string, string>[] typesNames = proxy.GetTypesNames();
+                Tuple<string, string,string>[] typesNames = proxy.GetTypesNames();
                 ObservableCollection<Module> tempList = new ObservableCollection<Module>();
                 for (int i = 0; i < typesNames.Length; i++)
                 {
@@ -363,6 +373,7 @@ namespace RunCommandDocker
                     {
                         Name = typesNames[i].Item1,
                         FullName = typesNames[i].Item2,
+                        ModulePath = typesNames[i].Item3,
                         Parent = project
                     };
                     if (lastCommand != null && lastCommand[1].Equals(m.Name))

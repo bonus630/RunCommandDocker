@@ -22,6 +22,19 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
+            <Style x:Key="bBorder"  TargetType="Border">
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="BorderBrush" Value="{DynamicResource Button.MouseOver.Border}" />
+                    </Trigger>
+                </Style.Triggers>
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="BorderBrush" Value="{DynamicResource Button.Static.Border}"/>
+                <!--<Setter Property="Background" Value="Red"/>-->
+
+            </Style>
+
             <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
             <converters:TypeToVisibilityConverter x:Key="TypeToVisibilityConverter" />
@@ -44,16 +57,31 @@
         <Grid Height="26" DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="26"/>
-                <ColumnDefinition Width="22"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="12" />
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="26"/>
                 <ColumnDefinition Width="26"/>
-              
+
             </Grid.ColumnDefinitions>
-            <custom:IconButton Grid.Column="0" BorderThickness="0" Background="Transparent" Icon="New" Width="22" Height="22" x:Name="btn_newProject" Click="btn_newProject_Click" ToolTip="Create a new project"/>
-            <custom:IconButton  Grid.Column="1" Icon="BuildSolution" Width="22" Height="22" x:Name="btn_buildProject" Click="btn_buildProject_Click" ToolTip="Build a project"/>
-            <custom:IconButton  Grid.Column="2" Icon="ArrowHeadDown" Width="12" Height="12" x:Name="btn_setProject" Click="btn_setProject_Click" VerticalContentAlignment="Center"/>
+            <custom:IconButton Grid.Column="0"   Icon="New" Width="22" Height="22" x:Name="btn_newProject" Click="btn_newProject_Click" ToolTip="Create a new project"/>
+            <Border Grid.Column="1" Height="22" Style="{DynamicResource bBorder}">
+
+                <Grid Width="68">
+                    <Button Margin="4,0,0,0" Padding="0"  BorderThickness="0" HorizontalAlignment="Left" x:Name="btn_buildProject" Click="btn_buildProject_Click" ToolTip="Build a project">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Style="{DynamicResource BuildSolutionImage}" Width="18" Height="18"/>
+                        <Label Content="Build" VerticalAlignment="Center"  FontSize="9.4" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Button>
+                    <Button  Margin="0,0,0,0" Background="Transparent" Width="12" Height="18"  BorderThickness="0" HorizontalAlignment="Right" x:Name="btn_setProject" Click="btn_setProject_Click" ToolTip="Select a CS or VB project" >
+                        <Image Style="{DynamicResource ArrowHeadDownImage}" Margin="0,4,0,0" />
+                    </Button>
+                </Grid>
+            </Border>
+            <!--<ComboBox Grid.Column="1" SelectedIndex="0">
+                <custom:IconButton Icon="BuildSolution"  Width="18" Height="18" HorizontalAlignment="Left" x:Name="btn_buildProject" Click="btn_buildProject_Click" ToolTip="Build a project"/>
+            </ComboBox>-->
             <Button Grid.Column="5" Style="{DynamicResource NoBorderButton}" Width="22" Height="22" Name="btn_selectFolder" Click="btn_selectFolder_Click">
                 <Button.ToolTip>
                     <Label Content="Select a folder to monitor"/>
@@ -97,6 +125,7 @@
                     </Border>
                 </Border>
             </Popup>
+          
         </Grid>
 
         <Grid DockPanel.Dock="Bottom">
@@ -335,6 +364,17 @@
                 </HierarchicalDataTemplate>
                 <HierarchicalDataTemplate  ItemsSource="{Binding Path=Items}" DataType="{x:Type local:Module}" >
                     <Grid>
+                        <Grid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Edit" CommandParameter="{Binding}"
+                                          Command="{Binding Path=PlacementTarget.DataContext.Parent.Parent.EditModuleCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
+                                         Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <MenuItem.Icon>
+                                        <Image Style="{DynamicResource EditImage}"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </Grid.ContextMenu>
                         <Label Content="{Binding Path=Name}" Focusable="False"/>
                     </Grid>
                 </HierarchicalDataTemplate>

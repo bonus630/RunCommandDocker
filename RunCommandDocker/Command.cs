@@ -217,6 +217,7 @@ namespace RunCommandDocker
     {
         public Project Parent { get; set; }
         public string FullName { get; set; }
+        public string ModulePath { get; set; }
         public override string ToString() { return string.Format("{0}/{1}", Parent.Name, Name); }
         public override bool Equals(object obj)
         {

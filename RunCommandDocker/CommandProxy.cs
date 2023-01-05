@@ -18,6 +18,7 @@ namespace RunCommandDocker
         Assembly commandAssembly;
         public Func<object> Ctor { get; private set; }
         private readonly string[] CDRAttributesMacroFlags = { "CgsAddInModule", "CgsAddInConstructor", "CgsAddInMacro", "CgsAddInTool" };
+        private readonly string AuxAttributesFlagsModulePath = "ModulePath" ;
         private Type[] AssemblyTypes;
         public Func<object> ActionRunCommand { get; private set; }
 
@@ -87,9 +88,9 @@ namespace RunCommandDocker
         {
             return "";
         }
-        public Tuple<string,string>[] GetTypesNames()
+        public Tuple<string,string,string>[] GetTypesNames()
         {
-            Tuple<string, string>[] typesNames = { };
+            Tuple<string, string,string>[] typesNames = { };
 
             for (int i = 0; i < AssemblyTypes.Length; i++)
             {
@@ -102,7 +103,8 @@ namespace RunCommandDocker
                         if (CheckParametizedCtor(type))
                         {
                             Array.Resize(ref typesNames, typesNames.Length + 1);
-                            typesNames[typesNames.Length - 1] = new Tuple<string, string>(type.Name, type.FullName);
+                            string modulePath = GetCustomAttributeValue(type.GetCustomAttributesData(), AuxAttributesFlagsModulePath).ToString();
+                            typesNames[typesNames.Length - 1] = new Tuple<string, string,string>(type.Name, type.FullName,modulePath);
                         }
                     }
               
@@ -226,6 +228,16 @@ namespace RunCommandDocker
             }
             return false;
         }
-
+        private object GetCustomAttributeValue(IList<CustomAttributeData> customAttributes,string AttributeName)
+        {
+            for (int i = 0; i < customAttributes.Count; i++)
+            {
+                if (customAttributes[i].ToString().Contains( AttributeName))
+                {
+                    return customAttributes[i].ConstructorArguments[0].Value;
+                }
+            }
+            return null;
+        }
     }
 }

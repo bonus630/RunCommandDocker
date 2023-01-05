@@ -193,6 +193,8 @@ namespace RunCommandDocker
             if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 pc.LastProject = ofd.FileName;
+                Properties.Settings.Default.LastProject = pc.LastProject;
+                Properties.Settings.Default.Save();
             }
         }
     }
