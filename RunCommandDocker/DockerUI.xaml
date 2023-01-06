@@ -68,15 +68,32 @@
             <Border Grid.Column="1" Height="22" Style="{DynamicResource bBorder}">
 
                 <Grid Width="68">
-                    <Button Margin="4,0,0,0" Padding="0"  BorderThickness="0" HorizontalAlignment="Left" x:Name="btn_buildProject" Click="btn_buildProject_Click" ToolTip="Build a project">
+                    <Button Margin="4,0,0,0" Padding="0"  BorderThickness="0" HorizontalAlignment="Left" x:Name="btn_buildProject" Click="btn_buildProject_Click">
+                        <Button.ToolTip>
+                            <StackPanel Orientation="Horizontal">
+                                <Label>Build a project</Label>
+                                <!--<Label Content="{Binding LastProject}"/>-->
+                            </StackPanel>
+                        </Button.ToolTip>
                         <StackPanel Orientation="Horizontal">
                             <Image Style="{DynamicResource BuildSolutionImage}" Width="18" Height="18"/>
                         <Label Content="Build" VerticalAlignment="Center"  FontSize="9.4" FontWeight="Bold"/>
                         </StackPanel>
+                      
                     </Button>
                     <Button  Margin="0,0,0,0" Background="Transparent" Width="12" Height="18"  BorderThickness="0" HorizontalAlignment="Right" x:Name="btn_setProject" Click="btn_setProject_Click" ToolTip="Select a CS or VB project" >
                         <Image Style="{DynamicResource ArrowHeadDownImage}" Margin="0,4,0,0" />
                     </Button>
+                    <Popup x:Name="popup_log" StaysOpen="True" Placement="Right">
+                        <Border Padding="10" BorderThickness="0" Style="{DynamicResource PopupBorder}">
+                            <Border Padding="20" BorderThickness="1" BorderBrush="{DynamicResource Container.Text.Static.Foreground}">
+                                <StackPanel>
+                                    <RichTextBox AcceptsReturn="True" AcceptsTab="True" Width="300" Height="300" Name="txt_log"/>
+                                    <Button Content="Close" Name="btn_close_popupLog" Click="btn_close_popupLog_Click" />
+                                </StackPanel>
+                            </Border>
+                        </Border>
+                    </Popup>
                 </Grid>
             </Border>
             <!--<ComboBox Grid.Column="1" SelectedIndex="0">

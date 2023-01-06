@@ -249,7 +249,11 @@ namespace RunCommandDocker
         }
         private bool CanEditModule(Module module)
         {
-            return !string.IsNullOrEmpty(module.ModulePath);
+            if (module == null)
+                return false;
+            if(!string.IsNullOrEmpty(module.ModulePath))
+                return File.Exists(module.ModulePath);
+            return false;
         }
         private bool CanRunSetCommandReturnArgVal(Command command)
         {

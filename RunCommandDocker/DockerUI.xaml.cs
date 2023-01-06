@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Corel.Interop.VGCore;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -73,7 +74,18 @@ namespace RunCommandDocker
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             stylesController.LoadThemeFromPreference();
+            pc.DataReceived += Pc_DataReceived;
+            pc.VgCore = corelApp.ProgramPath + "Assemblies\\Corel.Interop.VGCore.dll";
+            pc.AddonFolder = Path.Combine(corelApp.AddonPath, "RunCommandDocker");
+        }
 
+        private void Pc_DataReceived(string obj)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                txt_log.AppendText(obj);
+                txt_log.AppendText(Environment.NewLine);
+            });
         }
 
         private void btn_selectFolder_Click(object sender, RoutedEventArgs e)
@@ -129,9 +141,12 @@ namespace RunCommandDocker
             popup_newProject.IsOpen = !popup_newProject.IsOpen;
         }
         ProjectCreator pc = new ProjectCreator();
+       
         private void btn_buildProject_Click(object sender, RoutedEventArgs e)
         {
+            popup_log.IsOpen = true;
             pc.Build();
+            
         }
 
         private void btn_createProject_Click(object sender, RoutedEventArgs e)
@@ -145,8 +160,8 @@ namespace RunCommandDocker
                 pc.SetProjectName(txt_projectName.Text);
                 pc.ProjectFolder = txt_projectFolder.Text;
                 pc.AssembliesFolder = this.projectsManager.Dir;
-                pc.VgCore = corelApp.ProgramPath + "Assemblies\\Corel.Interop.VGCore.dll";
-                pc.ExtractFiles(Path.Combine(corelApp.AddonPath, "RunCommandDocker", "Templates"));
+             
+                pc.ExtractFiles();
 
                 pc.ReplaceFiles();
                 pc.Build();
@@ -196,6 +211,12 @@ namespace RunCommandDocker
                 Properties.Settings.Default.LastProject = pc.LastProject;
                 Properties.Settings.Default.Save();
             }
+        }
+
+        private void btn_close_popupLog_Click(object sender, RoutedEventArgs e)
+        {
+            popup_log.IsOpen = false;
+            txt_log.Document.Blocks.Clear();
         }
     }
 }

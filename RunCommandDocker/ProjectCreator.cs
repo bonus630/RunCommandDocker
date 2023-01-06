@@ -15,14 +15,16 @@ namespace RunCommandDocker
     {
         private string safeProjectName;
         private string projectName;
+        private string loggerVariable;
 
-        private readonly string[] toReplace = { "$safeprojectname$", "$vgcoredll$", "$assembliesFolder$", "$projectname$", "$guid2$" };
+        private readonly string[] toReplace = { "$safeprojectname$", "$vgcoredll$", "$assembliesFolder$", "$projectname$", "$guid2$","$ModulePath$" };
 
         public string VgCore { get; set; }
         public string AssembliesFolder { get; set; }
 
         public string ProjectFolder { get; set; }
         public string LastProject { get; set; }
+        public string AddonFolder { get; set; }
         public int Index { get; set; }
         //$safeprojectname$
         //$vgcoredll$
@@ -54,55 +56,63 @@ namespace RunCommandDocker
             safeProjectName = RemoveInvalidChars(projectName);
             this.projectName = projectName;
         }
-        public void ReplaceCSFiles()
+        public void ReplaceFiles()
         {
-            string[] fileList = { "Main.cs", "MacroClassLibraryCS.csproj", "PROPERTIES\\AssemblyInfo.cs" };
-            for (int i = 0; i < fileList.Length; i++)
-            {
-                string path = Path.Combine(ProjectFolder, fileList[i]);
-                try
-                {
-                    string text = File.ReadAllText(path);
-                    text = text.Replace(toReplace[0], safeProjectName);
-                    text = text.Replace(toReplace[1], VgCore);
-                    text = text.Replace(toReplace[2], AssembliesFolder);
-                    text = text.Replace(toReplace[3], projectName);
-                    text = text.Replace(toReplace[4], Guid.NewGuid().ToString());
-
-                    File.WriteAllText(path, text);
-                }
-                catch { }
-            }
-        }
-        public void ReplaceVBFiles()
-        {
-            string[] fileList = { "Main.vb", "MacroClassLibraryVB.vbproj", "My Project\\AssemblyInfo.vb" };
-            for (int i = 0; i < fileList.Length; i++)
-            {
-                string path = Path.Combine(ProjectFolder, fileList[i]);
-                try
-                {
-                    string text = File.ReadAllText(path);
-                    text = text.Replace(toReplace[0], safeProjectName);
-                    text = text.Replace(toReplace[1], VgCore);
-                    text = text.Replace(toReplace[2], AssembliesFolder);
-                    text = text.Replace(toReplace[3], projectName);
-                    text = text.Replace(toReplace[4], Guid.NewGuid().ToString());
-
-                    File.WriteAllText(path, text);
-                }
-                catch { }
-            }
-        }
-        public void ExtractFiles(string templatePath)
-        {
+            string[] fileList = { };
             switch (Index)
             {
                 case 0:
-                    templatePath = Path.Combine(templatePath, "MacroClassLibraryCS.zip");
+                    fileList = GetCSFiles();
                     break;
                 case 1:
-                    templatePath = Path.Combine(templatePath, "MacroClassLibraryVB.zip");
+                    fileList = GetVBFiles();
+                    break;
+            }
+            for (int i = 0; i < fileList.Length; i++)
+            {
+                string path = Path.Combine(ProjectFolder, fileList[i]);
+                try
+                {
+                    string text = File.ReadAllText(path);
+                    text = text.Replace(toReplace[0], safeProjectName);
+                    text = text.Replace(toReplace[1], VgCore);
+                    text = text.Replace(toReplace[2], AssembliesFolder);
+                    text = text.Replace(toReplace[3], projectName);
+                    text = text.Replace(toReplace[4], Guid.NewGuid().ToString());
+                    text = text.Replace(toReplace[5], path);
+                    File.WriteAllText(path, text);
+                    if (path.Contains("ProjFile"))
+                    {
+                        string npath = path.Replace("ProjFile", safeProjectName);
+                        File.Move(path, npath);
+                    }
+                    
+                    
+                }
+                catch { }
+            }
+            LastProject = GetProjFullPath(ProjectFolder);
+        }
+        public string[] GetCSFiles()
+        {
+            string[] fileList = { "Main.cs", "CdrCustomAttributes.cs", "ProjFile.csproj", "PROPERTIES\\AssemblyInfo.cs" };
+            return fileList;
+        }
+        public string[] GetVBFiles()
+        {
+            string[] fileList = { "Main.vb", "ProjFile.vbproj", "My Project\\AssemblyInfo.vb" };
+            return fileList;
+        }
+        public void ExtractFiles()
+        {
+            string templatePath = "";
+            switch (Index)
+            {
+                case 0:
+                    templatePath = Path.Combine(AddonFolder, "Templates",  "MacroClassLibraryCS.zip");
+                    break;
+                case 1:
+                    templatePath = Path.Combine(AddonFolder, "Templates", "MacroClassLibraryVB.zip");
                     break;
             }
             
@@ -140,7 +150,7 @@ namespace RunCommandDocker
             }
             catch { }
         }
-        private string GetCSproj(string dir)
+        private string GetProjFullPath(string dir)
         {
             DirectoryInfo dirInfo = new DirectoryInfo(dir);
             FileInfo[] files = dirInfo.GetFiles();
@@ -153,14 +163,16 @@ namespace RunCommandDocker
             DirectoryInfo[] dirs = dirInfo.GetDirectories();
             for (int i = 0; i < dirs.Length; i++)
             {
-                GetCSproj(dirs[i].FullName);
+                GetProjFullPath(dirs[i].FullName);
             }
             return "";
         }
         public void Build()
         {
-            if(!string.IsNullOrEmpty(LastProject))
+            if (!string.IsNullOrEmpty(LastProject))
                 StartMSBuild(string.Format("\"{0}\" /p:Configuration={1} /m", LastProject, config));
+                //StartMSBuild(string.Format("\"{0}\" /p:Configuration=\"{1}\" /v:d /nologo /noconsolelogger{2}{3}"
+               // , LastProject, config, "", loggerVariable));
         }
     
         protected string msbuildPath;
@@ -173,19 +185,27 @@ namespace RunCommandDocker
         {
             var ver = System.Environment.Version;
             string win = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Windows);
-            string path = $"{win}\\microsoft.net";
+            string path = string.Format("{0}\\microsoft.net", win);
             string frame = "Framework64";
-            if (!Directory.Exists($"{path}\\{frame}"))
+            if (!Directory.Exists(string.Format("{0}\\{1}", path, frame)))
                 frame = "Framework";
-            else if (!Directory.Exists($"{path}\\{frame}"))
+            else if (!Directory.Exists(string.Format("{0}\\{1}", path, frame)))
                 throw new Exception(".Net Framework not found");
 
-            path = $"{path}\\{frame}\\v{ver.Major}.{ver.Minor}.{ver.Build}";
+            path = string.Format("{0}\\{1}\\v{2}.{3}.{4}", path, frame, ver.Major, ver.Minor, ver.Build);
 
-            if (!File.Exists($"{path}\\MSBuild.exe"))
+            if (!File.Exists(string.Format("{0}\\MSBuild.exe", path)))
                 throw new Exception("MSBuild not found");
             else
-                msbuildPath = $"{path}\\MSBuild.exe";
+                msbuildPath = string.Format("{0}\\MSBuild.exe", path);
+
+            //loggerDll = Path.Combine(Application.StartupPath, "MSBuildLogger.dll");
+            //if (File.Exists(loggerDll))
+            //    loggerVariable = string.Format(" /logger:\"{0}\"", loggerDll);
+           
+            loggerVariable = string.Format(" /logger:\"{0}\"",Path.Combine(AddonFolder, "MSBuildLogger.dll"));
+     
+
 
         }
         public void StartMSBuild(string arguments)
@@ -194,7 +214,7 @@ namespace RunCommandDocker
                 SetMsBuildPath();
 
             Process psi = new Process();
-            // ProcessStartInfo psi = new ProcessStartInfo();
+          
             psi.StartInfo.CreateNoWindow = true;
             psi.StartInfo.UseShellExecute = false;
             psi.EnableRaisingEvents = true;
@@ -220,21 +240,9 @@ namespace RunCommandDocker
         }
         protected void OnFinish()
         {
+            if(Finish != null)
+                Finish();
+        }
    
-            Finish?.Invoke();
-        }
-        public void ReplaceFiles()
-        {
-            switch (Index)
-            {
-                case 0:
-                    ReplaceCSFiles();
-                    break;
-                case 1:
-                    ReplaceVBFiles();
-                    break;
-            }
-            LastProject = GetCSproj(ProjectFolder);
-        }
     }
 }
