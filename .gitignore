@@ -363,3 +363,11 @@ MigrationBackup/
 FodyWeavers.xsd
 /RunCommandDocker.sln
 /readme.rtf
+/RunCommandDocker/Templates/Main.vb
+/RunCommandDocker/Templates/My Project
+/RunCommandDocker/Templates/PROPERTIES
+/RunCommandDocker/Templates/CdrCustomAttributes.cs
+/RunCommandDocker/Templates/CdrCustomAttributes.vb
+/RunCommandDocker/Templates/Main.cs
+/RunCommandDocker/Templates/ProjFile.csproj
+/RunCommandDocker/Templates/ProjFile.vbproj
