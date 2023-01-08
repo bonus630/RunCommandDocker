@@ -68,6 +68,7 @@ namespace RunCommandDocker
                     fileList = GetVBFiles();
                     break;
             }
+ 
             for (int i = 0; i < fileList.Length; i++)
             {
                 string path = Path.Combine(ProjectFolder, fileList[i]);
@@ -89,7 +90,11 @@ namespace RunCommandDocker
                     
                     
                 }
-                catch { }
+                catch(IOException eio)
+                {
+                    System.Windows.Forms.MessageBox.Show(eio.Message);
+                }
+                catch (Exception e){ System.Windows.Forms.MessageBox.Show(e.Message); }
             }
             LastProject = GetProjFullPath(ProjectFolder);
         }
@@ -106,20 +111,31 @@ namespace RunCommandDocker
         public void ExtractFiles()
         {
             string templatePath = "";
+            string template = "";
             switch (Index)
             {
                 case 0:
-                    templatePath = Path.Combine(AddonFolder, "Templates",  "MacroClassLibraryCS.zip");
+                    template = "MacroClassLibraryCS.zip";
                     break;
                 case 1:
-                    templatePath = Path.Combine(AddonFolder, "Templates", "MacroClassLibraryVB.zip");
+                    template = "MacroClassLibraryVB.zip";
                     break;
             }
-            
+            templatePath = Path.Combine(AddonFolder, "Templates", template);
+            string tempPath = Path.Combine(Path.GetTempPath(),template);
+            if (File.Exists(tempPath))
+            {
+                try
+                {
+                    File.Delete(tempPath);
+                    File.Copy(templatePath, tempPath);
+                }
+                catch { }
+            }
 
             try
             {
-                using (FileStream fs = new FileStream(templatePath, FileMode.Open))
+                using (FileStream fs = new FileStream(tempPath, FileMode.Open))
                 {
                     ZipArchive z = new ZipArchive(fs);
                     var entries = z.Entries;
@@ -148,7 +164,11 @@ namespace RunCommandDocker
                     }
                 }
             }
-            catch { }
+            catch (IOException eio)
+            {
+                System.Windows.Forms.MessageBox.Show(eio.Message);
+            }
+            catch (Exception e) { System.Windows.Forms.MessageBox.Show(e.Message); }
         }
         private string GetProjFullPath(string dir)
         {

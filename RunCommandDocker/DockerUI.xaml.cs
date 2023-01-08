@@ -160,8 +160,9 @@ namespace RunCommandDocker
                 pc.SetProjectName(txt_projectName.Text);
                 pc.ProjectFolder = txt_projectFolder.Text;
                 pc.AssembliesFolder = this.projectsManager.Dir;
-             
+               
                 pc.ExtractFiles();
+                
 
                 pc.ReplaceFiles();
                 pc.Build();
