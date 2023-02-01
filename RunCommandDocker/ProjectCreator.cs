@@ -17,7 +17,7 @@ namespace RunCommandDocker
         private string projectName;
         private string loggerVariable;
 
-        private readonly string[] toReplace = { "$safeprojectname$", "$vgcoredll$", "$assembliesFolder$", "$projectname$", "$guid2$","$ModulePath$" };
+        private readonly string[] toReplace = { "$safeprojectname$", "$vgcoredll$", "$assembliesFolder$", "$projectname$", "$guid2$", "$ModulePath$" };
 
         public string VgCore { get; set; }
         public string AssembliesFolder { get; set; }
@@ -44,7 +44,7 @@ namespace RunCommandDocker
             {
                 nText = nText.Replace(chars[i].ToString(), "_");
             }
-            chars = new char[]{' ','@','#','$' };
+            chars = new char[] { ' ', '@', '#', '$' };
             for (int i = 0; i < chars.Length; i++)
             {
                 nText = nText.Replace(chars[i].ToString(), "_");
@@ -68,7 +68,7 @@ namespace RunCommandDocker
                     fileList = GetVBFiles();
                     break;
             }
- 
+
             for (int i = 0; i < fileList.Length; i++)
             {
                 string path = Path.Combine(ProjectFolder, fileList[i]);
@@ -87,14 +87,14 @@ namespace RunCommandDocker
                         string npath = path.Replace("ProjFile", safeProjectName);
                         File.Move(path, npath);
                     }
-                    
-                    
+
+
                 }
-                catch(IOException eio)
+                catch (IOException eio)
                 {
                     System.Windows.Forms.MessageBox.Show(eio.Message);
                 }
-                catch (Exception e){ System.Windows.Forms.MessageBox.Show(e.Message); }
+                catch (Exception e) { System.Windows.Forms.MessageBox.Show(e.Message); }
             }
             LastProject = GetProjFullPath(ProjectFolder);
         }
@@ -122,17 +122,20 @@ namespace RunCommandDocker
                     break;
             }
             templatePath = Path.Combine(AddonFolder, "Templates", template);
-            string tempPath = Path.Combine(Path.GetTempPath(),template);
+            string tempPath = Path.Combine(Path.GetTempPath(), template);
             if (File.Exists(tempPath))
             {
                 try
                 {
                     File.Delete(tempPath);
-                    File.Copy(templatePath, tempPath);
                 }
                 catch { }
             }
-
+            try
+            {
+                File.Copy(templatePath, tempPath);
+            }
+            catch { }
             try
             {
                 using (FileStream fs = new FileStream(tempPath, FileMode.Open))
@@ -177,7 +180,7 @@ namespace RunCommandDocker
             for (int i = 0; i < files.Length; i++)
             {
                 if (files[i].Extension == ".csproj" || files[i].Extension == ".vbproj")
-                   return files[i].FullName;
+                    return files[i].FullName;
             }
 
             DirectoryInfo[] dirs = dirInfo.GetDirectories();
@@ -191,10 +194,10 @@ namespace RunCommandDocker
         {
             if (!string.IsNullOrEmpty(LastProject))
                 StartMSBuild(string.Format("\"{0}\" /p:Configuration={1} /m", LastProject, config));
-                //StartMSBuild(string.Format("\"{0}\" /p:Configuration=\"{1}\" /v:d /nologo /noconsolelogger{2}{3}"
-               // , LastProject, config, "", loggerVariable));
+            //StartMSBuild(string.Format("\"{0}\" /p:Configuration=\"{1}\" /v:d /nologo /noconsolelogger{2}{3}"
+            // , LastProject, config, "", loggerVariable));
         }
-    
+
         protected string msbuildPath;
         private string config = "Release";
 
@@ -222,9 +225,9 @@ namespace RunCommandDocker
             //loggerDll = Path.Combine(Application.StartupPath, "MSBuildLogger.dll");
             //if (File.Exists(loggerDll))
             //    loggerVariable = string.Format(" /logger:\"{0}\"", loggerDll);
-           
-            loggerVariable = string.Format(" /logger:\"{0}\"",Path.Combine(AddonFolder, "MSBuildLogger.dll"));
-     
+
+            loggerVariable = string.Format(" /logger:\"{0}\"", Path.Combine(AddonFolder, "MSBuildLogger.dll"));
+
 
 
         }
@@ -234,7 +237,7 @@ namespace RunCommandDocker
                 SetMsBuildPath();
 
             Process psi = new Process();
-          
+
             psi.StartInfo.CreateNoWindow = true;
             psi.StartInfo.UseShellExecute = false;
             psi.EnableRaisingEvents = true;
@@ -260,9 +263,9 @@ namespace RunCommandDocker
         }
         protected void OnFinish()
         {
-            if(Finish != null)
+            if (Finish != null)
                 Finish();
         }
-   
+
     }
 }

@@ -14,6 +14,7 @@ namespace RunCommandDocker
     public partial class DockerUI : UserControl
     {
         private corel.Application corelApp;
+        //private object corelObj;
         private Styles.StylesController stylesController;
 
         ProxyManager proxyManager;
@@ -25,6 +26,7 @@ namespace RunCommandDocker
             InitializeComponent();
             try
             {
+                proxyManager = new ProxyManager(app, System.IO.Path.Combine((app as corel.Application).AddonPath, "RunCommandDocker"));
                 this.corelApp = app as corel.Application;
                 stylesController = new Styles.StylesController(this.Resources, this.corelApp);
             }
@@ -33,7 +35,7 @@ namespace RunCommandDocker
                 global::System.Windows.MessageBox.Show("VGCore Erro");
             }
             this.Loaded += DockerUI_Loaded;
-            proxyManager = new ProxyManager(this.corelApp, System.IO.Path.Combine(this.corelApp.AddonPath, "RunCommandDocker"));
+            
             shapeRangeManager = new ShapeRangeManager(this.corelApp);
 
             AppDomain.CurrentDomain.AssemblyLoad += LoadDomain_AssemblyLoad;

@@ -243,6 +243,10 @@ namespace RunCommandDocker
             }
             return canPin;
         }
+        //devenv.exe "caminho\para\a\solucao.sln" /edit "caminho\para\o\arquivo.extensão"
+        //devenv.exe "caminho\para\a\solucao.sln" /edit "caminho\para\o\arquivo.extensão":linha
+        //devenv.exe "caminho\para\o\arquivo.extensão" /command "Edit.GoTo nomeDoMétodo"
+        //devenv.exe "caminho\para\o\arquivo.extensão" /command "Edit.GoToDefinition nomeDoMétodo"
         private void EditModule(Module module)
         {
             Process.Start(module.ModulePath);

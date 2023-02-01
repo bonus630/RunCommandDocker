@@ -103,7 +103,10 @@ namespace RunCommandDocker
                         if (CheckParametizedCtor(type))
                         {
                             Array.Resize(ref typesNames, typesNames.Length + 1);
-                            string modulePath = GetCustomAttributeValue(type.GetCustomAttributesData(), AuxAttributesFlagsModulePath).ToString();
+                            object modulePathObj = GetCustomAttributeValue(type.GetCustomAttributesData(), AuxAttributesFlagsModulePath);
+                            string modulePath = "";
+                            if (modulePathObj != null)
+                                modulePath = modulePathObj.ToString();
                             typesNames[typesNames.Length - 1] = new Tuple<string, string,string>(type.Name, type.FullName,modulePath);
                         }
                     }

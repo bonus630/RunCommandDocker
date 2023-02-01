@@ -386,8 +386,7 @@
                         <Grid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Edit" CommandParameter="{Binding}"
-                                          Command="{Binding Path=PlacementTarget.DataContext.Parent.Parent.EditModuleCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
-                                         Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                                          Command="{Binding Path=PlacementTarget.DataContext.Parent.Parent.EditModuleCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}" >
                                     <MenuItem.Icon>
                                         <Image Style="{DynamicResource EditImage}"/>
                                     </MenuItem.Icon>
